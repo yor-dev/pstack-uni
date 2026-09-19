@@ -14,6 +14,8 @@
 | [upstream-differences.md](upstream-differences.md) | 変更の意味、ユーザー指定の除外、非対応機能、検証範囲 |
 | [upstream.py](../tools/upstream.py) | パッチ更新・復元検証・新旧本家と移植版の三者比較 |
 
+リポジトリ直下の [.claude-plugin/marketplace.json](../.claude-plugin/marketplace.json) は、この移植版の配布カタログとして別途管理する。本家由来の配布ファイルのパッチには含めない。plugin の version は `claude/.claude-plugin/plugin.json` を使い、カタログへ重複記載しない。Claude のリリース更新時は plugin の version も更新する。
+
 パッチの基点は本家の元ディレクトリではなく、対応表どおりに**ファイルを配置しただけの原文**。配置変更は manifest、本文・メタデータ・実行権限の変更と移植専用ファイルの追加はパッチに記録する。両方を合わせて配布版を再現する。
 
 一つの元ファイルから複数の配置先を指定できる。Claude の `poteto-agent` と Comment Sicko の effort 別定義も、元のエージェント本文に対応づけている。本家の本文変更は派生した各定義の比較対象になる。
@@ -91,6 +93,7 @@ python3 -m unittest discover -s tools -p 'test_*.py'
 | 変更対象 | 検証 |
 | --- | --- |
 | 登録設定・配置 | `claude plugin validate ./claude` と Codex の native skill validator。明示起動と変更した内部参照を確認 |
+| 導入経路 | `claude plugin validate .` で marketplace を検証し、一時設定で marketplace の追加・plugin の導入を確認。Codex は一時プロジェクトで README の `npx skills add` を実行し、内部ファイル・ライセンス・スクリプトの実行権限まで配置を確認 |
 | 入口・プレイブック・委任 | 影響する実タスクで、必要な指示の読み込み、子への入力、結果の受け渡しをログで確認 |
 | 計画テンプレート・check-plan | テンプレートから計画を取り出して各版の `scripts/check-plan.mjs` に渡す。検査条件を変えた場合は、その条件を欠く計画が失敗することも確認 |
 | 同梱スクリプト | 対象スクリプトの既存テストと、変更した入出力の検証 |
@@ -103,3 +106,5 @@ python3 -m unittest discover -s tools -p 'test_*.py'
 2026-09-20：pstack の158ファイルと同梱依存の4ファイルを分類し、Claude 145ファイル・Codex 131ファイルの現行配布版を完全パッチから復元した。元エージェントから派生する effort 定義も対応表に含む。今回、本家のバージョン自体は更新していない。
 
 保守ツールの6テストも合格した。固定 Git object の読込、バイナリ・実行権限・追加ファイルの復元、未分類ファイルの検出、複数配置先への統合、本文の競合、追加・削除・除外ファイルの変更を、一時的な Git リポジトリで検証した。将来の本家リリースそのものを取り込んだ試験ではない。
+
+同日の導入経路整備で marketplace を追加し、Codex のスキル単体にも本家 LICENSE を配置した。Codex 配布版は132ファイル、`npx skills add` の対象スキル内は130ファイルとなった。LICENSE の配置先は同じ本家ファイルへの対応として manifest に記録している。

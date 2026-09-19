@@ -1,0 +1,14 @@
+{
+  "name": "pstack-uni",
+  "description": "Claude Code distribution of poteto's pstack workflows.",
+  "owner": {
+    "name": "yor-dev"
+  },
+  "plugins": [
+    {
+      "name": "pstack",
+      "source": "./claude",
+      "description": "poteto's pstack workflows for Claude Code."
+    }
+  ]
+}

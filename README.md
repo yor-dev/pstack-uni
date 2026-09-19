@@ -8,7 +8,16 @@
 
 `claude/` がプラグイン本体です。`poteto-mode` を明示起動し、プレイブックと下位スキルの内部ファイルを必要に応じて読みます。下位スキルを個別のコマンドとして登録しません。
 
-リポジトリのルートで、プラグインを検証用のモデル・effort で読み込めます。
+Claude Code 内で marketplace を追加し、プラグインをインストールします。このリポジトリは非公開なので、アクセス権のある Git 認証が必要です。
+
+```text
+/plugin marketplace add yor-dev/pstack-uni
+/plugin install pstack@pstack-uni
+```
+
+導入後は `/pstack:poteto-mode 調査したいことや実装したいこと` と依頼します。Claude Code 版はスキルとネイティブエージェント定義を一緒に導入するため、marketplace を使います。`npx skills add` でスキルだけを入れても、プラグイン全体の導入にはなりません。[marketplace の公式説明](https://code.claude.com/docs/en/plugin-marketplaces)。
+
+開発時はリポジトリのルートで、プラグインを検証用のモデル・effort で直接読み込めます。
 
 ```sh
 CLAUDE_CODE_ENABLE_TODO_TOOLS=1 claude --plugin-dir ./claude --model claude-opus-5 --effort low --settings '{"env":{"CLAUDE_CODE_EFFORT_LEVEL":"low"}}'
@@ -24,9 +33,22 @@ CLAUDE_CODE_ENABLE_TODO_TOOLS=1 claude --plugin-dir ./claude --model claude-opus
 
 ## Codex
 
-`codex/.agents/` を対象プロジェクトの `.agents/` として配置する構成です。入口は `$poteto-mode` 一つで、下位スキルとエージェント本文は内部ファイルです。自動起動は無効にしています。
+対象プロジェクトで次を実行します。Codex 版のパスを明示し、Claude Code 版と取り違えないようにします。非公開リポジトリへの Git 認証と、[skills CLI](https://github.com/vercel-labs/skills) が対応する Node.js が必要です。検証した skills 1.7.0 は Node.js 22.20.0 以降を要求します。
+
+```sh
+npx skills add https://github.com/yor-dev/pstack-uni/tree/main/codex/.agents/skills/poteto-mode --agent codex --yes
+```
+
+プロジェクトの `.agents/skills/poteto-mode/` へ導入されます。clone 済みなら URL の代わりに `/path/to/pstack-uni/codex/.agents/skills/poteto-mode` を指定できます。入口は `$poteto-mode` 一つで、下位スキル・エージェント本文・参照資料・スクリプト・ライセンスはそのディレクトリ内に同梱します。自動起動は無効にしています。導入後に Codex を起動し、`$poteto-mode 調査したいことや実装したいこと` と依頼します。
 
 CLI V1 では、本家の深さ3の委任に合わせて `.codex/config.toml` の `[agents]` に `max_depth = 3` を設定します。同梱の `codex/.codex/config.toml` はこの設定だけを持ちます。既存設定がある場合は、このキーを統合してください。V2 ではこのキーは無視されます。
+
+`npx skills add` は `.codex/config.toml` を設定しないため、CLI V1 では次の値を別途統合します。
+
+```toml
+[agents]
+max_depth = 3
+```
 
 GPT-5.6 Luna / xhigh で、入口から Investigation・how・説明担当への委任、設定保存、Comment Sicko によるコメント編集、native goal の作成・取得・達成終了を確認しています。スキル作成では、入口から native `skill-creator`、設計・実装・検証の委任を経て、実行可能な成果物を作成しました。履歴処理は Codex の rollout 形式へ変更し、Claude 版と同じ3つの依存指示書を同梱しています。
 

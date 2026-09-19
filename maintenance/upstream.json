@@ -84,7 +84,8 @@
           "claude/LICENSE"
         ],
         "codex": [
-          "codex/LICENSE"
+          "codex/LICENSE",
+          "codex/.agents/skills/poteto-mode/LICENSE"
         ]
       }
     },
