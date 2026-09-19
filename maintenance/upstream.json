@@ -1,0 +1,1838 @@
+{
+  "repository": "https://github.com/cursor/plugins.git",
+  "commit": "e31650eea443aaea1e84cc15d88c13f40080b275",
+  "version": "0.15.2",
+  "scopes": [
+    "pstack",
+    "cursor-team-kit/LICENSE",
+    "cursor-team-kit/skills/deslop",
+    "cursor-team-kit/skills/control-cli",
+    "cursor-team-kit/skills/control-ui"
+  ],
+  "files": [
+    {
+      "source": "cursor-team-kit/LICENSE",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/dependencies/cursor-team-kit/LICENSE"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/dependencies/cursor-team-kit/LICENSE"
+        ]
+      }
+    },
+    {
+      "source": "cursor-team-kit/skills/control-cli/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/dependencies/cursor-team-kit/control-cli/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/dependencies/cursor-team-kit/control-cli/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "cursor-team-kit/skills/control-ui/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/dependencies/cursor-team-kit/control-ui/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/dependencies/cursor-team-kit/control-ui/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "cursor-team-kit/skills/deslop/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/dependencies/cursor-team-kit/deslop/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/dependencies/cursor-team-kit/deslop/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/.cursor-plugin/plugin.json",
+      "targets": {
+        "claude": [
+          "claude/.claude-plugin/plugin.json"
+        ],
+        "codex": []
+      },
+      "excluded": {
+        "codex": "Codex は Claude/Cursor の plugin manifest を使わない。"
+      }
+    },
+    {
+      "source": "pstack/.gitignore",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。",
+        "codex": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。"
+      }
+    },
+    {
+      "source": "pstack/LICENSE",
+      "targets": {
+        "claude": [
+          "claude/LICENSE"
+        ],
+        "codex": [
+          "codex/LICENSE"
+        ]
+      }
+    },
+    {
+      "source": "pstack/README.md",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。",
+        "codex": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。"
+      }
+    },
+    {
+      "source": "pstack/agents/comment-sicko.md",
+      "targets": {
+        "claude": [
+          "claude/agents/comment-sicko.md",
+          "claude/agents/comment-sicko-high.md",
+          "claude/agents/comment-sicko-low.md",
+          "claude/agents/comment-sicko-max.md",
+          "claude/agents/comment-sicko-medium.md",
+          "claude/agents/comment-sicko-xhigh.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/agents/comment-sicko.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/agents/poteto-agent.md",
+      "targets": {
+        "claude": [
+          "claude/agents/poteto-agent.md",
+          "claude/agents/poteto-agent-high.md",
+          "claude/agents/poteto-agent-low.md",
+          "claude/agents/poteto-agent-max.md",
+          "claude/agents/poteto-agent-medium.md",
+          "claude/agents/poteto-agent-xhigh.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/agents/poteto-agent.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/assets/logo.png",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。",
+        "codex": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。"
+      }
+    },
+    {
+      "source": "pstack/automations/benny/FOR_AGENTS.md",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "Cursor automation 専用。ローカル移植の対象外。",
+        "codex": "Cursor automation 専用。ローカル移植の対象外。"
+      }
+    },
+    {
+      "source": "pstack/automations/benny/README.md",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "Cursor automation 専用。ローカル移植の対象外。",
+        "codex": "Cursor automation 専用。ローカル移植の対象外。"
+      }
+    },
+    {
+      "source": "pstack/automations/benny/skills/reproduce-and-fix-issues/SKILL.md",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "Cursor automation 専用。ローカル移植の対象外。",
+        "codex": "Cursor automation 専用。ローカル移植の対象外。"
+      }
+    },
+    {
+      "source": "pstack/automations/benny/skills/reproduce-and-fix-issues/references/control-adapter.md",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "Cursor automation 専用。ローカル移植の対象外。",
+        "codex": "Cursor automation 専用。ローカル移植の対象外。"
+      }
+    },
+    {
+      "source": "pstack/automations/benny/skills/reproduce-and-fix-issues/references/feature-map.example.md",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "Cursor automation 専用。ローカル移植の対象外。",
+        "codex": "Cursor automation 専用。ローカル移植の対象外。"
+      }
+    },
+    {
+      "source": "pstack/automations/benny/skills/reproduce-and-fix-issues/references/verify-existing-fix.md",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "Cursor automation 専用。ローカル移植の対象外。",
+        "codex": "Cursor automation 専用。ローカル移植の対象外。"
+      }
+    },
+    {
+      "source": "pstack/automations/benny/skills/setup-benny/SKILL.md",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "Cursor automation 専用。ローカル移植の対象外。",
+        "codex": "Cursor automation 専用。ローカル移植の対象外。"
+      }
+    },
+    {
+      "source": "pstack/automations/benny/skills/triage-issue-reports/SKILL.md",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "Cursor automation 専用。ローカル移植の対象外。",
+        "codex": "Cursor automation 専用。ローカル移植の対象外。"
+      }
+    },
+    {
+      "source": "pstack/automations/benny/skills/triage-issue-reports/references/routing.example.md",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "Cursor automation 専用。ローカル移植の対象外。",
+        "codex": "Cursor automation 専用。ローカル移植の対象外。"
+      }
+    },
+    {
+      "source": "pstack/automations/benny/templates/configuration.example.yaml",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "Cursor automation 専用。ローカル移植の対象外。",
+        "codex": "Cursor automation 専用。ローカル移植の対象外。"
+      }
+    },
+    {
+      "source": "pstack/automations/benny/templates/reproduce-automation-prompt.md",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "Cursor automation 専用。ローカル移植の対象外。",
+        "codex": "Cursor automation 専用。ローカル移植の対象外。"
+      }
+    },
+    {
+      "source": "pstack/automations/benny/templates/triage-automation-prompt.md",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "Cursor automation 専用。ローカル移植の対象外。",
+        "codex": "Cursor automation 専用。ローカル移植の対象外。"
+      }
+    },
+    {
+      "source": "pstack/docs/guide/01-setup.md",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。",
+        "codex": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。"
+      }
+    },
+    {
+      "source": "pstack/docs/guide/02-poteto-mode.md",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。",
+        "codex": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。"
+      }
+    },
+    {
+      "source": "pstack/docs/guide/03-understand.md",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。",
+        "codex": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。"
+      }
+    },
+    {
+      "source": "pstack/docs/guide/04-design.md",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。",
+        "codex": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。"
+      }
+    },
+    {
+      "source": "pstack/docs/guide/05-build-and-clean.md",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。",
+        "codex": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。"
+      }
+    },
+    {
+      "source": "pstack/docs/guide/06-verify-and-ship.md",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。",
+        "codex": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。"
+      }
+    },
+    {
+      "source": "pstack/docs/guide/07-overnight.md",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。",
+        "codex": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。"
+      }
+    },
+    {
+      "source": "pstack/docs/guide/08-principles.md",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。",
+        "codex": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。"
+      }
+    },
+    {
+      "source": "pstack/docs/guide/09-make-it-yours.md",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。",
+        "codex": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。"
+      }
+    },
+    {
+      "source": "pstack/docs/guide/10-recipes-and-pitfalls.md",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。",
+        "codex": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。"
+      }
+    },
+    {
+      "source": "pstack/docs/guide/README.md",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。",
+        "codex": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。"
+      }
+    },
+    {
+      "source": "pstack/docs/guide/images/design.jpg",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。",
+        "codex": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。"
+      }
+    },
+    {
+      "source": "pstack/docs/guide/images/overnight.jpg",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。",
+        "codex": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。"
+      }
+    },
+    {
+      "source": "pstack/docs/guide/images/recipes.jpg",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。",
+        "codex": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。"
+      }
+    },
+    {
+      "source": "pstack/docs/guide/images/router.jpg",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。",
+        "codex": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。"
+      }
+    },
+    {
+      "source": "pstack/docs/guide/images/understanding.jpg",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。",
+        "codex": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。"
+      }
+    },
+    {
+      "source": "pstack/docs/guide/images/verification.jpg",
+      "targets": {
+        "claude": [],
+        "codex": []
+      },
+      "excluded": {
+        "claude": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。",
+        "codex": "移植版の README と保守資料で説明する。本家の表示用資料・画像・ignore 設定は同梱しない。"
+      }
+    },
+    {
+      "source": "pstack/skills/architect/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/architect/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/architect/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/architect/references/design-red-flags.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/architect/references/design-red-flags.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/architect/references/design-red-flags.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/architect/references/rationale-template.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/architect/references/rationale-template.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/architect/references/rationale-template.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/architect/references/runner-prompt.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/architect/references/runner-prompt.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/architect/references/runner-prompt.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/arena/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/arena/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/arena/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/automate-me/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/automate-me/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/automate-me/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/blast-radius/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/blast-radius/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/blast-radius/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/bro/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/bro/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/bro/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/create-verification-skill/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/create-verification-skill/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/create-verification-skill/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/create-verification-skill/references/feature-map-example/README.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/create-verification-skill/references/feature-map-example/README.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/create-verification-skill/references/feature-map-example/README.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/create-verification-skill/references/feature-map-example/create-note.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/create-verification-skill/references/feature-map-example/create-note.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/create-verification-skill/references/feature-map-example/create-note.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/create-verification-skill/references/feature-map-example/search.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/create-verification-skill/references/feature-map-example/search.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/create-verification-skill/references/feature-map-example/search.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/figure-it-out/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/figure-it-out/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/figure-it-out/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/how/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/how/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/how/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/how/references/explainer-prompt.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/how/references/explainer-prompt.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/how/references/explainer-prompt.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/how/references/explorer-prompt.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/how/references/explorer-prompt.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/how/references/explorer-prompt.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/interrogate/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/interrogate/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/interrogate/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/interrogate/references/code-quality-review.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/interrogate/references/code-quality-review.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/interrogate/references/code-quality-review.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/interrogate/references/lead-judgment.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/interrogate/references/lead-judgment.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/interrogate/references/lead-judgment.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/interrogate/references/reviewer-prompt.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/interrogate/references/reviewer-prompt.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/interrogate/references/reviewer-prompt.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/interrogate/references/rubric.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/interrogate/references/rubric.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/interrogate/references/rubric.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/maintain-verification-skill/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/maintain-verification-skill/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/maintain-verification-skill/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/make-bot-ui/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/make-bot-ui/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/make-bot-ui/instructions.md"
+        ]
+      },
+      "note": "クラウド専用手順を提供せず、除外理由と本家リンクだけを配置する。"
+    },
+    {
+      "source": "pstack/skills/no-comments/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/no-comments/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/no-comments/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/SKILL.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/SKILL.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/playbooks/authoring-a-skill.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/playbooks/authoring-a-skill.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/playbooks/authoring-a-skill.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/playbooks/autonomous-run.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/playbooks/autonomous-run.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/playbooks/autonomous-run.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/playbooks/autopilot-full.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/playbooks/autopilot-full.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/playbooks/autopilot-full.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/playbooks/autopilot-stack.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/playbooks/autopilot-stack.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/playbooks/autopilot-stack.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/playbooks/babysit.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/playbooks/babysit.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/playbooks/babysit.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/playbooks/bug-fix.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/playbooks/bug-fix.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/playbooks/bug-fix.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/playbooks/eval.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/playbooks/eval.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/playbooks/eval.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/playbooks/feature.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/playbooks/feature.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/playbooks/feature.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/playbooks/hillclimb.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/playbooks/hillclimb.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/playbooks/hillclimb.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/playbooks/investigation.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/playbooks/investigation.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/playbooks/investigation.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/playbooks/multi-phase-plan.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/playbooks/multi-phase-plan.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/playbooks/multi-phase-plan.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/playbooks/opening-a-pr.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/playbooks/opening-a-pr.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/playbooks/opening-a-pr.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/playbooks/orchestrate.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/playbooks/orchestrate.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/playbooks/orchestrate.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/playbooks/pause-safely.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/playbooks/pause-safely.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/playbooks/pause-safely.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/playbooks/perf-issue.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/playbooks/perf-issue.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/playbooks/perf-issue.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/playbooks/prototype.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/playbooks/prototype.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/playbooks/prototype.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/playbooks/refactoring.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/playbooks/refactoring.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/playbooks/refactoring.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/playbooks/runtime-forensics.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/playbooks/runtime-forensics.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/playbooks/runtime-forensics.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/playbooks/session-pickup.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/playbooks/session-pickup.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/playbooks/session-pickup.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/playbooks/shipping.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/playbooks/shipping.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/playbooks/shipping.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/playbooks/trace-forensics.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/playbooks/trace-forensics.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/playbooks/trace-forensics.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/playbooks/visual-parity.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/playbooks/visual-parity.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/playbooks/visual-parity.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/playbooks/worktree-cleanup.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/playbooks/worktree-cleanup.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/playbooks/worktree-cleanup.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/references/bugbot-triage.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/references/bugbot-triage.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/references/bugbot-triage.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/scripts/bootstrap.ts",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/scripts/bootstrap.ts"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/scripts/bootstrap.ts"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/scripts/bun.lock",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/scripts/bun.lock"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/scripts/bun.lock"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/scripts/check-plan.mjs",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/scripts/check-plan.mjs"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/scripts/check-plan.mjs"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/scripts/orch/orch.test.ts",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/scripts/orch/orch.test.ts"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/scripts/orch/orch.test.ts"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/scripts/orch/orch.ts",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/scripts/orch/orch.ts"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/scripts/orch/orch.ts"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/scripts/orch/store.ts",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/scripts/orch/store.ts"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/scripts/orch/store.ts"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/scripts/package.json",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/scripts/package.json"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/scripts/package.json"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/scripts/watch-pr/cli.test.ts",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/scripts/watch-pr/cli.test.ts"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/scripts/watch-pr/cli.test.ts"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/scripts/watch-pr/cli.ts",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/scripts/watch-pr/cli.ts"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/scripts/watch-pr/cli.ts"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/scripts/watch-pr/fakes.test-helper.ts",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/scripts/watch-pr/fakes.test-helper.ts"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/scripts/watch-pr/fakes.test-helper.ts"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/scripts/watch-pr/github.test.ts",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/scripts/watch-pr/github.test.ts"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/scripts/watch-pr/github.test.ts"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/scripts/watch-pr/github.ts",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/scripts/watch-pr/github.ts"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/scripts/watch-pr/github.ts"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/scripts/watch-pr/policy.test.ts",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/scripts/watch-pr/policy.test.ts"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/scripts/watch-pr/policy.test.ts"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/scripts/watch-pr/policy.ts",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/scripts/watch-pr/policy.ts"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/scripts/watch-pr/policy.ts"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/scripts/watch-pr/render.ts",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/scripts/watch-pr/render.ts"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/scripts/watch-pr/render.ts"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/scripts/watch-pr/tsconfig.json",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/scripts/watch-pr/tsconfig.json"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/scripts/watch-pr/tsconfig.json"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/scripts/watch-pr/types.compile.ts",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/scripts/watch-pr/types.compile.ts"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/scripts/watch-pr/types.compile.ts"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/scripts/watch-pr/types.ts",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/scripts/watch-pr/types.ts"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/scripts/watch-pr/types.ts"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/scripts/watch-pr/watch-pr",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/scripts/watch-pr/watch-pr"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/scripts/watch-pr/watch-pr"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/poteto-mode/scripts/worktree-audit.sh",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/scripts/worktree-audit.sh"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/scripts/worktree-audit.sh"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/principle-attack-the-premise/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/principle-attack-the-premise/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/principle-attack-the-premise/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/principle-boundary-discipline/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/principle-boundary-discipline/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/principle-boundary-discipline/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/principle-build-the-lever/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/principle-build-the-lever/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/principle-build-the-lever/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/principle-encode-lessons-in-structure/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/principle-encode-lessons-in-structure/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/principle-encode-lessons-in-structure/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/principle-exhaust-the-design-space/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/principle-exhaust-the-design-space/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/principle-exhaust-the-design-space/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/principle-experience-first/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/principle-experience-first/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/principle-experience-first/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/principle-fix-root-causes/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/principle-fix-root-causes/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/principle-fix-root-causes/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/principle-foundational-thinking/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/principle-foundational-thinking/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/principle-foundational-thinking/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/principle-guard-the-context-window/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/principle-guard-the-context-window/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/principle-guard-the-context-window/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/principle-laziness-protocol/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/principle-laziness-protocol/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/principle-laziness-protocol/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/principle-make-operations-idempotent/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/principle-make-operations-idempotent/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/principle-make-operations-idempotent/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/principle-migrate-callers-then-delete-legacy-apis/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/principle-migrate-callers-then-delete-legacy-apis/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/principle-migrate-callers-then-delete-legacy-apis/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/principle-minimize-reader-load/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/principle-minimize-reader-load/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/principle-minimize-reader-load/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/principle-model-the-domain/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/principle-model-the-domain/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/principle-model-the-domain/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/principle-never-block-on-the-human/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/principle-never-block-on-the-human/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/principle-never-block-on-the-human/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/principle-outcome-oriented-execution/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/principle-outcome-oriented-execution/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/principle-outcome-oriented-execution/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/principle-prove-it-works/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/principle-prove-it-works/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/principle-prove-it-works/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/principle-redesign-from-first-principles/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/principle-redesign-from-first-principles/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/principle-redesign-from-first-principles/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/principle-separate-before-serializing-shared-state/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/principle-separate-before-serializing-shared-state/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/principle-separate-before-serializing-shared-state/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/principle-sequence-verifiable-units/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/principle-sequence-verifiable-units/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/principle-sequence-verifiable-units/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/principle-subtract-before-you-add/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/principle-subtract-before-you-add/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/principle-subtract-before-you-add/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/principle-test-behavior-not-implementation/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/principle-test-behavior-not-implementation/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/principle-test-behavior-not-implementation/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/principle-type-system-discipline/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/principle-type-system-discipline/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/principle-type-system-discipline/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/recall/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/recall/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/recall/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/reflect/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/reflect/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/reflect/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/reflect/references/divergent-reviewer.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/reflect/references/divergent-reviewer.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/reflect/references/divergent-reviewer.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/reflect/references/judgment-reviewer.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/reflect/references/judgment-reviewer.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/reflect/references/judgment-reviewer.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/reflect/references/synthesizer.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/reflect/references/synthesizer.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/reflect/references/synthesizer.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/reflect/references/tooling-reviewer.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/reflect/references/tooling-reviewer.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/reflect/references/tooling-reviewer.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/setup-pstack/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/setup-pstack/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/setup-pstack/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/show-me-your-work/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/show-me-your-work/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/show-me-your-work/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/show-me-your-work/references/decision-log-template.tsv",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/show-me-your-work/references/decision-log-template.tsv"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/show-me-your-work/references/decision-log-template.tsv"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/show-me-your-work/scripts/log.sh",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/show-me-your-work/scripts/log.sh"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/show-me-your-work/scripts/log.sh"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/swarm/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/swarm/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/swarm/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/tdd/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/tdd/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/tdd/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/teach/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/teach/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/teach/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/technical-writing/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/technical-writing/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/technical-writing/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/typescript-best-practices/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/typescript-best-practices/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/typescript-best-practices/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/typescript-best-practices/references/patterns.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/typescript-best-practices/references/patterns.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/typescript-best-practices/references/patterns.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/unslop/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/unslop/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/unslop/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/why/SKILL.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/why/instructions.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/why/instructions.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/why/references/epistemics.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/why/references/epistemics.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/why/references/epistemics.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/why/references/investigator-prompt.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/why/references/investigator-prompt.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/why/references/investigator-prompt.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/why/references/source-playbook.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/why/references/source-playbook.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/why/references/source-playbook.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/why/references/sources/code-archaeology.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/why/references/sources/code-archaeology.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/why/references/sources/code-archaeology.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/why/references/sources/databricks.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/why/references/sources/databricks.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/why/references/sources/databricks.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/why/references/sources/datadog.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/why/references/sources/datadog.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/why/references/sources/datadog.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/why/references/sources/incident-postmortem.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/why/references/sources/incident-postmortem.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/why/references/sources/incident-postmortem.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/why/references/sources/linear.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/why/references/sources/linear.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/why/references/sources/linear.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/why/references/sources/notion.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/why/references/sources/notion.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/why/references/sources/notion.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/why/references/sources/sentry.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/why/references/sources/sentry.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/why/references/sources/sentry.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/why/references/sources/slack.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/why/references/sources/slack.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/why/references/sources/slack.md"
+        ]
+      }
+    },
+    {
+      "source": "pstack/skills/why/references/synthesizer-prompt.md",
+      "targets": {
+        "claude": [
+          "claude/skills/poteto-mode/internal/why/references/synthesizer-prompt.md"
+        ],
+        "codex": [
+          "codex/.agents/skills/poteto-mode/internal/why/references/synthesizer-prompt.md"
+        ]
+      }
+    }
+  ],
+  "additions": [
+    {
+      "target": "claude/agents/general-purpose-high.md",
+      "reason": "本文なしの native general-purpose 用 effort 定義。"
+    },
+    {
+      "target": "claude/agents/general-purpose-low.md",
+      "reason": "本文なしの native general-purpose 用 effort 定義。"
+    },
+    {
+      "target": "claude/agents/general-purpose-max.md",
+      "reason": "本文なしの native general-purpose 用 effort 定義。"
+    },
+    {
+      "target": "claude/agents/general-purpose-medium.md",
+      "reason": "本文なしの native general-purpose 用 effort 定義。"
+    },
+    {
+      "target": "claude/agents/general-purpose-xhigh.md",
+      "reason": "本文なしの native general-purpose 用 effort 定義。"
+    },
+    {
+      "target": "codex/.agents/skills/poteto-mode/agents/openai.yaml",
+      "reason": "明示起動専用の native skill UI 設定。"
+    },
+    {
+      "target": "codex/.codex/config.toml",
+      "reason": "CLI V1 の委任深度を本家の3階層に合わせる native 設定。"
+    }
+  ]
+}

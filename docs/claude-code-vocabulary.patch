@@ -1,0 +1,68 @@
+--- a/skills/poteto-mode/SKILL.md
++++ b/skills/poteto-mode/SKILL.md
+@@ -1,5 +1,5 @@
+ ---
+-name: Poteto Mode
++name: poteto-mode
+ description: poteto's agent style for concise, detailed responses, deliberate subagents, unslopped prose, simple code, and verified work. Use for poteto, /poteto-mode, or requests to work in this style.
+ disable-model-invocation: true
+ mode: true
+@@ -88,9 +88,9 @@
+ 
+ ## Subagents
+ 
+-**Use `subagent_type: "poteto-agent"` for any subagent you spawn inside a playbook step** (code-writing delegates, ad-hoc helpers). `/poteto-mode` and `poteto-agent` route through the same wrapper. Routed workflow skills (`how`, `why`, `interrogate`, `reflect`, `swarm`) set their own `subagent_type` for diverse-model review. Respect what the skill prescribes, don't override to `poteto-agent`.
++**Use `subagent_type: "pstack:poteto-agent"` for any subagent you spawn inside a playbook step** (code-writing delegates, ad-hoc helpers). `/poteto-mode` and `poteto-agent` route through the same wrapper. Routed workflow skills (`how`, `why`, `interrogate`, `reflect`, `swarm`) set their own `subagent_type` for diverse-model review. Respect what the skill prescribes, don't override to `poteto-agent`.
+ 
+-**Defaults for every `Task` call.** `run_in_background: true`, agent mode (readonly strips MCP), file pointers not inlined context, explicit model per role (configurable via `/setup-pstack`. Defaults `grok-4.6-fast-xhigh` for code, `claude-fable-5-1-thinking-max` for prose and judgment). Code delegates tier by difficulty. The hardest changes (cross-cutting design, gnarly concurrency, subtle algorithms) go to your strongest judgment model (`claude-fable-5-1-thinking-max`), whether the task needs judgment on vague intent or is a precisely specified sequence of steps to execute to the letter. Trivial mechanical edits go to your fast code model. Per-role lines in the `/setup-pstack` rule override these defaults and the model choices in the routed skills (`how`, `why`, `arena`, `swarm`, `architect`, `interrogate`, `reflect`). A role with no line keeps its default, and a role line of `inherit-parent` or `auto` runs that role on the parent chat model (omit Task `model`).
++**Defaults for every `Agent` call.** `run_in_background: true`, agent mode (readonly strips MCP), file pointers not inlined context, explicit model per role (configurable via `/setup-pstack`. Defaults `grok-4.6-fast-xhigh` for code, `claude-fable-5-1-thinking-max` for prose and judgment). Code delegates tier by difficulty. The hardest changes (cross-cutting design, gnarly concurrency, subtle algorithms) go to your strongest judgment model (`claude-fable-5-1-thinking-max`), whether the task needs judgment on vague intent or is a precisely specified sequence of steps to execute to the letter. Trivial mechanical edits go to your fast code model. Per-role lines in the `/setup-pstack` rule override these defaults and the model choices in the routed skills (`how`, `why`, `arena`, `swarm`, `architect`, `interrogate`, `reflect`). A role with no line keeps its default, and a role line of `inherit-parent` or `auto` runs that role on the parent chat model (omit Agent `model`).
+ 
+ You own every subagent's work. Review the diff and write your own summary, don't pass through what it said. Interrupt-chained resumes silently drop directives, so fire a fresh subagent with consolidated scope rather than trusting a "done" summary. A second opinion is the same prompt against a different model. Agreement is high-signal.
+ 
+--- a/skills/how/SKILL.md
++++ b/skills/how/SKILL.md
+@@ -21,7 +21,7 @@
+ 
+ Decompose the question into 2 to 4 exploration angles, each a distinct slice of the subsystem. Spawn all explorers in a single message:
+ 
+-- `subagent_type`: `generalPurpose`
++- `subagent_type`: `general-purpose`
+ - `model`: your configured how-explorer model (default `grok-4.6-fast-xhigh`)
+ - `readonly`: `true`
+ 
+@@ -29,9 +29,9 @@
+ 
+ ## Step 2b. Direct Explain (simple questions)
+ 
+-Spawn one Task subagent that explores and explains in one pass:
++Spawn one Agent subagent that explores and explains in one pass:
+ 
+-- `subagent_type`: `generalPurpose`
++- `subagent_type`: `general-purpose`
+ - `model`: your configured how-explainer model (default `claude-fable-5-1-thinking-max`)
+ - `readonly`: `true`
+ 
+@@ -39,9 +39,9 @@
+ 
+ ## Step 3. Synthesize (complex questions only)
+ 
+-Once all explorers have returned, spawn one Task subagent to synthesize their findings into one explanation:
++Once all explorers have returned, spawn one Agent subagent to synthesize their findings into one explanation:
+ 
+-- `subagent_type`: `generalPurpose`
++- `subagent_type`: `general-purpose`
+ - `model`: your configured how-explainer model (default `claude-fable-5-1-thinking-max`)
+ - `readonly`: `true`
+ 
+--- a/agents/poteto-agent.md
++++ b/agents/poteto-agent.md
+@@ -1,7 +1,7 @@
+ ---
+ name: poteto-agent
+-description: Routing target for `/poteto-mode` and any request for poteto's style. Resume an existing `poteto-agent` for the conversation rather than spawning a sibling. Reads the `poteto-mode` skill's `SKILL.md` in full before any work, including its inline Principles index. Substituting `generalPurpose` skips that read and drifts.
+-is_background: true
++description: Routing target for `/poteto-mode` and any request for poteto's style. Resume an existing `poteto-agent` for the conversation rather than spawning a sibling. Reads the `poteto-mode` skill's `SKILL.md` in full before any work, including its inline Principles index. Substituting `general-purpose` skips that read and drifts.
++background: true
+ ---
+ 
+ # Poteto subagent
