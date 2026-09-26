@@ -9,14 +9,14 @@
 | ファイル | 役割 |
 | --- | --- |
 | [upstream.json](../maintenance/upstream.json) | リポジトリ、固定コミット、pstack バージョン、対象範囲、全元ファイルの配置先・除外理由、移植専用ファイルの理由 |
-| [claude.patch](../maintenance/patches/claude.patch) | 原文を Claude の配置先へ並べた状態から、現在の Claude 配布版への完全な変更 |
+| [claude.patch](../maintenance/patches/claude.patch) | 原文を Claude の配置先へ並べた状態から、現在の Claude 配布版への変更。plugin の version は除外 |
 | [codex.patch](../maintenance/patches/codex.patch) | 同じく Codex 配布版への完全な変更 |
 | [upstream-differences.md](upstream-differences.md) | 変更の意味、ユーザー指定の除外、非対応機能、検証範囲 |
 | [upstream.py](../tools/upstream.py) | パッチ更新・復元検証・新旧本家と移植版の三者比較 |
 
-リポジトリ直下の [.claude-plugin/marketplace.json](../.claude-plugin/marketplace.json) は、この移植版の配布カタログとして別途管理する。本家由来の配布ファイルのパッチには含めない。plugin の version は `claude/.claude-plugin/plugin.json` を使い、カタログへ重複記載しない。Claude のリリース更新時は plugin の version も更新する。
+リポジトリ直下の [.claude-plugin/marketplace.json](../.claude-plugin/marketplace.json) は、この移植版の配布カタログとして別途管理する。本家由来の配布ファイルのパッチには含めない。配布バージョンの正本は [claude/.claude-plugin/plugin.json](../claude/.claude-plugin/plugin.json) の `version` だけとし、カタログ・ドキュメント・パッチへ番号を重複記載しない。Claude のリリース更新時はこの値を上げる。バージョンだけの変更なら、パッチの再生成は不要。
 
-パッチの基点は本家の元ディレクトリではなく、対応表どおりに**ファイルを配置しただけの原文**。配置変更は manifest、本文・メタデータ・実行権限の変更と移植専用ファイルの追加はパッチに記録する。両方を合わせて配布版を再現する。
+パッチの基点は本家の元ディレクトリではなく、対応表どおりに配置した原文。Claude manifest は原文・配布版ともに `version` を取り除いて JSON を整形してから差分を作る。その他の本文・メタデータ・実行権限の変更と移植専用ファイルの追加はパッチに記録する。
 
 一つの元ファイルから複数の配置先を指定できる。Claude の `poteto-agent` と Comment Sicko の effort 別定義も、元のエージェント本文に対応づけている。本家の本文変更は派生した各定義の比較対象になる。
 
@@ -35,7 +35,7 @@ python3 tools/upstream.py check --source tmp/experiments/upstream-source
 
 既に clone があればそのパスを使う。固定コミットを持たない shallow clone では、先にそのコミットを fetch する。
 
-`check` は元ファイル・配布ファイルの対応漏れ、重複する配置先、バージョンの不整合を検出する。さらに一時ディレクトリへ原文を配置し、保存パッチを適用して、配布版の内容・ファイル集合・実行権限を再現する。配布物は変更しない。未記録の配布ファイル変更があれば失敗する。symlink 等の未対応ファイル形式も黙って落とさず失敗する。
+`check` は元ファイル・配布ファイルの対応漏れ、重複する配置先、本家と `upstream.json` のバージョン不整合を検出する。さらに一時ディレクトリへ原文を配置し、保存パッチを適用して、配布版の内容・ファイル集合・実行権限を検証する。Claude manifest は配布バージョンと JSON の整形差を検証対象から外し、その他のフィールドは検証する。配布物は変更しない。未記録の配布ファイル変更があれば失敗する。symlink 等の未対応ファイル形式も黙って落とさず失敗する。
 
 ## 更新候補を作る
 
@@ -54,6 +54,8 @@ python3 tools/upstream.py compare \
 - `report.json`：新旧コミット・新バージョン、追加・削除・変更、各配置先の比較結果。
 - `upstream.patch`：旧本家から新本家への差分。同梱依存や除外ファイルの変更も含む。
 - `candidate/claude/`・`candidate/codex/`：現在の配布版を基に三者比較した候補。新規元ファイルは配置が未決定なので自動追加しない。
+
+Claude manifest の三者比較では、本家のバージョン変更から切り離して、現在の配布版の `version` を候補に保持する。
 
 | 結果 | 対応 |
 | --- | --- |

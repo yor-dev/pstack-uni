@@ -1,54 +1,35 @@
 diff --git a/claude/.claude-plugin/plugin.json b/claude/.claude-plugin/plugin.json
-index 19402321c3ac7272b941757838c24b1694c03545..feacaf176185557f24c9d3e16b0b481f0af7bb9e 100644
+index f17f86f63d469592aef2f757e35a31b8b862d552..05014072904c02988be79a0862e1591f384b148c 100644
 --- a/claude/.claude-plugin/plugin.json
 +++ b/claude/.claude-plugin/plugin.json
-@@ -1,31 +1,18 @@
+@@ -1,12 +1,8 @@
  {
--	"name": "pstack",
--	"displayName": "pstack",
--	"version": "0.15.2",
--	"description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence.",
--	"author": {
--		"name": "Lauren Tan"
--	},
--	"homepage": "https://github.com/cursor/plugins/tree/main/pstack",
--	"repository": "https://github.com/cursor/plugins",
--	"license": "MIT",
--	"logo": "assets/logo.png",
--	"keywords": [
--		"pstack",
--		"poteto-mode",
--		"workflow",
--		"principles",
--		"agent-style",
--		"subagents",
--		"unslop"
--	],
--	"category": "developer-tools",
--	"tags": [
--		"workflow",
--		"principles",
--		"review",
--		"planning"
--	],
--	"skills": "./skills/",
--	"agents": "./agents/"
-+  "name": "pstack",
-+  "description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence.",
-+  "author": {
-+    "name": "Lauren Tan"
-+  },
-+  "license": "MIT",
-+  "keywords": [
-+    "pstack",
-+    "poteto-mode",
-+    "workflow",
-+    "principles",
-+    "agent-style",
-+    "subagents",
-+    "unslop"
-+  ],
-+  "version": "0.1.0"
+-  "agents": "./agents/",
+   "author": {
+     "name": "Lauren Tan"
+   },
+-  "category": "developer-tools",
+   "description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence.",
+-  "displayName": "pstack",
+-  "homepage": "https://github.com/cursor/plugins/tree/main/pstack",
+   "keywords": [
+     "pstack",
+     "poteto-mode",
+@@ -17,14 +13,5 @@
+     "unslop"
+   ],
+   "license": "MIT",
+-  "logo": "assets/logo.png",
+-  "name": "pstack",
+-  "repository": "https://github.com/cursor/plugins",
+-  "skills": "./skills/",
+-  "tags": [
+-    "workflow",
+-    "principles",
+-    "review",
+-    "planning"
+-  ]
++  "name": "pstack"
  }
 diff --git a/claude/agents/comment-sicko-high.md b/claude/agents/comment-sicko-high.md
 index 9a688b8c5b5734ee80f782d4616a78c4c59b0946..419ff043e0bc936e0ae7c5381a1714769c6d0de4 100644

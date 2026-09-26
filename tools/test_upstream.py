@@ -65,6 +65,20 @@ class UpstreamTests(unittest.TestCase):
         report = json.loads((output / "report.json").read_text())
         return report, upstream.disk_tree(output / "candidate")
 
+    def add_plugin(self):
+        source = "pstack/.cursor-plugin/plugin.json"
+        self.source[source] = text(
+            '{\n\t"version": "1.0.0",\n\t"name": "pstack",\n'
+            '\t"description": "Original description"\n}\n'
+        )
+        self.manifest["commit"] = self.commit_tree(self.source)
+        row = next(row for row in self.manifest["files"] if row["source"] == source)
+        row["targets"]["claude"] = [upstream.CLAUDE_PLUGIN]
+        self.current[upstream.CLAUDE_PLUGIN] = text(
+            '{\n  "name": "pstack",\n  "description": "Original description",\n'
+            '  "version": "2.0.0"\n}\n'
+        )
+
     def test_source_uses_pinned_objects_despite_dirty_checkout(self):
         (self.repo / "pstack/skill.md").write_text("uncommitted replacement\n")
         (self.repo / "pstack/extra.md").write_text("untracked\n")
@@ -104,6 +118,57 @@ class UpstreamTests(unittest.TestCase):
         current = dict(self.current, **{"codex/unclassified.md": text("new\n")})
         with self.assertRaisesRegex(ValueError, "Destination inventory mismatch"):
             upstream.validate(self.manifest, self.source, current)
+
+    def test_version_bump_needs_no_patch_update_but_metadata_changes_do(self):
+        self.add_plugin()
+        upstream.validate(self.manifest, self.source, self.current)
+        patch_dir = self.root / "maintenance/patches"
+        patch_dir.mkdir(parents=True)
+        for platform in upstream.PLATFORMS:
+            value = upstream.patch_for(upstream.base_tree(self.manifest, self.source, platform), {
+                name: entry for name, entry in self.current.items() if name.startswith(platform + "/")
+            })
+            (patch_dir / f"{platform}.patch").write_bytes(value)
+        saved = (patch_dir / "claude.patch").read_bytes()
+        mode, content = self.current[upstream.CLAUDE_PLUGIN]
+        self.current[upstream.CLAUDE_PLUGIN] = mode, content.replace(b"2.0.0", b"2.1.0")
+        with patch.object(upstream, "ROOT", self.root), contextlib.redirect_stdout(io.StringIO()):
+            upstream.check_patches(self.manifest, self.source, self.current)
+            regenerated = upstream.patch_for(upstream.base_tree(self.manifest, self.source, "claude"), {
+                name: entry for name, entry in self.current.items() if name.startswith("claude/")
+            })
+            self.assertEqual(regenerated, saved)
+            self.assertNotIn(b'"version"', regenerated)
+            changed = dict(self.current)
+            changed[upstream.CLAUDE_PLUGIN] = mode, content.replace(b"Original", b"Changed")
+            with self.assertRaisesRegex(ValueError, "patch is stale"):
+                upstream.check_patches(self.manifest, self.source, changed)
+            changed[upstream.CLAUDE_PLUGIN] = "100755", self.current[upstream.CLAUDE_PLUGIN][1]
+            with self.assertRaisesRegex(ValueError, "patch is stale"):
+                upstream.check_patches(self.manifest, self.source, changed)
+            changed[upstream.CLAUDE_PLUGIN] = text('{"name": "pstack"}\n')
+            with self.assertRaises(KeyError):
+                upstream.check_patches(self.manifest, self.source, changed)
+
+    def test_compare_keeps_distribution_version_after_upstream_version_bump(self):
+        self.add_plugin()
+        new = dict(self.source)
+        source = "pstack/.cursor-plugin/plugin.json"
+        new[source] = "100644", new[source][1].replace(b"1.0.0", b"1.1.0")
+        report, candidate = self.compare(new)
+        self.assertEqual(report["version"], "1.1.0")
+        self.assertEqual(json.loads(candidate[upstream.CLAUDE_PLUGIN][1]),
+                         json.loads(self.current[upstream.CLAUDE_PLUGIN][1]))
+
+    def test_compare_merges_upstream_metadata_without_changing_distribution_version(self):
+        self.add_plugin()
+        new = dict(self.source)
+        source = "pstack/.cursor-plugin/plugin.json"
+        new[source] = "100644", new[source][1].replace(b"1.0.0", b"1.1.0").replace(b"Original", b"Updated")
+        _, candidate = self.compare(new)
+        metadata = json.loads(candidate[upstream.CLAUDE_PLUGIN][1])
+        self.assertEqual(metadata["version"], "2.0.0")
+        self.assertEqual(metadata["description"], "Updated description")
 
     def test_compare_merges_nonoverlapping_changes_for_every_target(self):
         original = self.source["pstack/skill.md"][1]

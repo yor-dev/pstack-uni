@@ -8,6 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "maintenance/upstream.json"
 PLATFORMS = ("claude", "codex")
+CLAUDE_PLUGIN = "claude/.claude-plugin/plugin.json"
 
 
 def git(repo, *args, data=None, allowed=(0,)):
@@ -95,7 +96,25 @@ def write_tree(root, tree):
         path.chmod(int(mode[-3:], 8))
 
 
+def plugin_entry(entry, version=None):
+    if entry is None:
+        return None
+    mode, content = entry
+    metadata = json.loads(content)
+    del metadata["version"]
+    if version is not None:
+        metadata["version"] = version
+    return mode, (json.dumps(metadata, ensure_ascii=False, indent=2, sort_keys=True) + "\n").encode()
+
+
+def patch_tree(tree):
+    # The distribution version is owned by plugin.json, not the upstream patches.
+    return {name: plugin_entry(entry) if name == CLAUDE_PLUGIN else entry
+            for name, entry in tree.items()}
+
+
 def patch_for(base, current):
+    base, current = patch_tree(base), patch_tree(current)
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         git(root, "init", "-q")
@@ -117,17 +136,18 @@ def check_patches(manifest, source, current):
             root = Path(tmp)
             git(root, "init", "-q")
             git(root, "config", "core.autocrlf", "false")
-            write_tree(root, base_tree(manifest, source, platform))
+            write_tree(root, patch_tree(base_tree(manifest, source, platform)))
             patch = (ROOT / "maintenance/patches" / f"{platform}.patch").read_bytes()
             if patch:
                 git(root, "apply", "--binary", "--whitespace=nowarn", "-", data=patch)
-            expected = {p: v for p, v in current.items() if p.startswith(platform + "/")}
+            expected = patch_tree({p: v for p, v in current.items() if p.startswith(platform + "/")})
             actual = disk_tree(root)
             if actual != expected:
                 changed = sorted(p for p in actual.keys() | expected.keys()
                                  if actual.get(p) != expected.get(p))
                 raise ValueError(f"{platform} patch is stale: {changed}")
-            print(f"{platform}: patch reconstructs {len(expected)} files and executable modes")
+            print(f"{platform}: patch verifies {len(expected)} files and executable modes"
+                  " (distribution version excluded)")
 
 
 def merge_candidate(old, local, new):
@@ -174,7 +194,12 @@ def compare(repo, manifest, old, current, ref, out):
         else:
             for platform in PLATFORMS:
                 for target in rows[name]["targets"][platform]:
-                    status, value = merge_candidate(old[name], current[target], new.get(name))
+                    entries = (old[name], current[target], new.get(name))
+                    if target == CLAUDE_PLUGIN:
+                        # Upstream releases must not change the distribution's version.
+                        version = json.loads(current[target][1])["version"]
+                        entries = tuple(plugin_entry(entry, version) for entry in entries)
+                    status, value = merge_candidate(*entries)
                     change["targets"].append({"target": target, "status": status})
                     if value is None:
                         candidates.pop(target)

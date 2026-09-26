@@ -77,6 +77,6 @@ Opus 5 / low と GPT-5.6 Luna / xhigh は検証時だけの指定です。両版
 
 ## 本家の更新への対応
 
-[固定元と全ファイルの対応表](maintenance/upstream.json)、[Claude の完全パッチ](maintenance/patches/claude.patch)、[Codex の完全パッチ](maintenance/patches/codex.patch) を保存しています。[差分の意味](docs/upstream-differences.md) と [更新手順・検証方法](docs/updating-upstream.md) を合わせて参照してください。
+[固定元と全ファイルの対応表](maintenance/upstream.json)、[Claude の移植パッチ](maintenance/patches/claude.patch)、[Codex の移植パッチ](maintenance/patches/codex.patch) を保存しています。配布バージョンは [plugin.json](claude/.claude-plugin/plugin.json) のみで管理します。[差分の意味](docs/upstream-differences.md) と [更新手順・検証方法](docs/updating-upstream.md) を合わせて参照してください。
 
 `tools/upstream.py` は、保存パッチからの復元検証と、新旧本家・現行移植版の三者比較を行います。新規・削除・競合を報告し、更新候補を別ディレクトリへ出力します。配布版への反映は翻訳内容をレビューして行います。

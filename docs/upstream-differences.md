@@ -68,11 +68,11 @@ Cursor の組み込み babysit を使わないという文や、worktree cleanup
 - cursor-team-kit の3指示書は、同じ固定コミットにある依存元の本文を変更せず同梱している。
 - 本家の README、`docs/guide/` と画像、ロゴ、`.gitignore` はそのまま同梱していない。移植版の README・翻訳記録を別途作成している。
 - 本家の `automations/benny/` は未同梱。これは Slack 報告の triage と再現・修正を扱う2つの Cursor automation 用セットで、47個の登録スキルとは別である。
-- Claude manifest は `.claude-plugin/plugin.json`、移植版の version は `0.1.0`。本家 manifest の displayName / homepage / repository / logo / category / tags と明示的な探索パスは持たない。Codex はこの manifest を使わず、skill UI 設定とプロジェクトの agent 設定を同梱する。MIT ライセンスと原著者表記は保持する。
+- Claude manifest と移植版の version の正本は [plugin.json](../claude/.claude-plugin/plugin.json)。本家 manifest の displayName / homepage / repository / logo / category / tags と明示的な探索パスは持たない。Codex はこの manifest を使わず、skill UI 設定とプロジェクトの agent 設定を同梱する。MIT ライセンスと原著者表記は保持する。
 
 ## 正式な差分と更新手順
 
-現在の固定コミット・全ファイル対応・除外理由・移植専用ファイルは [maintenance/upstream.json](../maintenance/upstream.json)、現在の完全な変更は [Claude パッチ](../maintenance/patches/claude.patch) と [Codex パッチ](../maintenance/patches/codex.patch) に保存している。対応表どおりに配置した原文へ各パッチを適用し、現在の配布版を復元できることを確認した。
+現在の固定コミット・全ファイル対応・除外理由・移植専用ファイルは [maintenance/upstream.json](../maintenance/upstream.json)、移植差分は [Claude パッチ](../maintenance/patches/claude.patch) と [Codex パッチ](../maintenance/patches/codex.patch) に保存している。Claude manifest の version はパッチから除外し、その他の内容と実行権限を保守ツールで検証する。
 
 本家更新時の三者比較、追加・削除・競合の処理、反映後の検証は [更新手順](updating-upstream.md) に記載する。保守基点のバージョンは 0.15.2 のまま維持し、上記の限定した実行時指示だけを 0.15.5 に合わせた。
 
