@@ -27,19 +27,21 @@ For each candidate, inspect the first `session_meta` record and then the visible
 
 ### 2. Spawn three reviewers in parallel
 
-One message, three ordinary `spawn_agent` calls without the poteto-agent body, explicit `model:` on each. Reviewers need MCP access for context lookups (tickets, chat threads, observability traces referenced in the transcript). Put each reviewer template in the native spawn message; do not rely on a Cursor agent type or custom-agent metadata.
+One message, three ordinary `spawn_agent` calls without the poteto-agent body, with model and effort set as below. Reviewers need MCP access for context lookups (tickets, chat threads, observability traces referenced in the transcript). Put each reviewer template in the native spawn message; do not rely on a Cursor agent type or custom-agent metadata.
 
-| Lens | `model` | Prompt template |
-|---|---|---|
-| Judgment | your configured reflect-judgment model (default `claude-fable-5-1-thinking-max`) | `references/judgment-reviewer.md` |
-| Tooling | your configured reflect-tooling model (default `gpt-5.6-sol-max`) | `references/tooling-reviewer.md` |
-| Divergent | your configured reflect-judgment model (default `claude-fable-5-1-thinking-max`) | `references/divergent-reviewer.md` |
+Each reviewer and the synthesizer name a role line in the pstack model configuration section of `~/.codex/AGENTS.md` and a default. Use the line's model and effort, or the default if the section or line is missing. For `auto` or `inherit-parent`, use the parent model and effort. If `spawn_agent` rejects a configured model, use the default and say so. If it rejects the default, use the closest valid model ID of the same family from its error message; if none exists, ask for a model choice.
+
+| Lens | Role line | Default model | Prompt template |
+|---|---|---|---|
+| Judgment | `reflect judgment, divergent, synthesizer` | `claude-opus-5-5-max` | `references/judgment-reviewer.md` |
+| Tooling | `reflect tooling` | `gpt-5.6-sol-max` | `references/tooling-reviewer.md` |
+| Divergent | `reflect judgment, divergent, synthesizer` | `claude-opus-5-5-max` | `references/divergent-reviewer.md` |
 
 Pass each template verbatim, substituting the transcript path or digest where marked. Reviewers return findings in the completed subagent response.
 
 ### 3. Synthesize
 
-One ordinary `spawn_agent` call without the poteto-agent body, using your configured reflect-judgment model (default `claude-fable-5-1-thinking-max`). The synthesizer's quality check includes spot-verifying citations, which can require MCP access. Use `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. The synthesizer returns a structured Accepted / Rejected / Backlog list.
+One ordinary `spawn_agent` call without the poteto-agent body, using the `reflect judgment, divergent, synthesizer` line (default `claude-opus-5-5-max`). The synthesizer's quality check includes spot-verifying citations, which can require MCP access. Use `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. The synthesizer returns a structured Accepted / Rejected / Backlog list.
 
 ### 4. Structural enforcement check
 

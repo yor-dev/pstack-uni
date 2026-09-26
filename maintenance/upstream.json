@@ -85,7 +85,8 @@
         ],
         "codex": [
           "codex/LICENSE",
-          "codex/.agents/skills/poteto-mode/LICENSE"
+          "codex/.agents/skills/poteto-mode/LICENSE",
+          "codex/.agents/skills/setup-pstack/LICENSE"
         ]
       }
     },
@@ -1545,10 +1546,10 @@
       "source": "pstack/skills/setup-pstack/SKILL.md",
       "targets": {
         "claude": [
-          "claude/skills/poteto-mode/internal/setup-pstack/instructions.md"
+          "claude/skills/setup-pstack/SKILL.md"
         ],
         "codex": [
-          "codex/.agents/skills/poteto-mode/internal/setup-pstack/instructions.md"
+          "codex/.agents/skills/setup-pstack/SKILL.md"
         ]
       }
     },

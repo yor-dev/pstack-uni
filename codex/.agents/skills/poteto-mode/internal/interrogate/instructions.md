@@ -32,20 +32,19 @@ Write one clear paragraph. If you're unsure about the intent, ask the user befor
 
 ## Step 3, Spawn Reviewers
 
-Launch all reviewers in a single message using the `spawn_agent` tool. Use the `interrogate reviewers` list from the pstack model configuration section of `~/.codex/AGENTS.md` when present, one reviewer per entry, extending or shrinking the Reviewer A/B/C/D labels below to the configured entry count. Otherwise use the table defaults.
+Launch all reviewers in a single message using the `spawn_agent` tool. Use the `interrogate reviewers` line in the pstack model configuration section of `~/.codex/AGENTS.md`, one reviewer per entry, extending or shrinking the Reviewer A/B/C labels below to the configured entry count. If the section or that line is missing, use the table defaults.
 
 | Subagent | Default model |
 |----------|---------------|
-| Reviewer A | `claude-fable-5-1-thinking-max` |
+| Reviewer A | `claude-opus-5-5-max` |
 | Reviewer B | `gpt-5.6-sol-max` |
-| Reviewer C | `grok-4.6-fast-xhigh` |
-| Reviewer D | `claude-opus-5-thinking-xhigh` |
+| Reviewer C | `grok-4.7-xhigh-fast` |
 
 For each reviewer:
 - Tool: `spawn_agent` without the poteto-agent body
-- `model`: the model ID from the configured `interrogate reviewers` entry, with its `reasoning_effort` passed separately. With no configured line, retain the table's model and effort choice
+- `model`: the model ID from the configured `interrogate reviewers` entry, with its `reasoning_effort` passed separately. With no configured line, retain the table's model and effort choice. For an `auto` or `inherit-parent` entry, use the parent model and effort
 
-If a model slug is rejected as unresolvable when you try to spawn the subagent, check the valid slugs in the `spawn_agent` tool's error message, pick the closest equivalent (prefer the highest-reasoning tier of the same family), spawn with the valid slug, and open a separate PR to update the configured value or default table. Do not block the review on the slug issue. If the configured value is `inherit-parent` or `auto`, pass the parent model and reasoning effort instead. Never treat those aliases as broken slugs or enter this fallback for them.
+If `spawn_agent` rejects a configured entry, run that reviewer on the table default of its family and say so. Families go by prefix: `claude-*`, `gpt-*`, and `grok-*`. With no family match, use Reviewer A's default. If it rejects a table default, check the valid model IDs in the tool's error message and pick the closest equivalent of the same family. If none exists, ask for a model choice. Open a separate PR to update a rejected default table. Do not block the review on a resolvable model issue. Never treat an alias entry as a rejected model or apply either fallback to it.
 
 Read `references/reviewer-prompt.md` and fill in the template with:
 1. The stated intent

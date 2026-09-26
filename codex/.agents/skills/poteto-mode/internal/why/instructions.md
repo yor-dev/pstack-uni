@@ -9,6 +9,8 @@ Investigate the motivation and intent behind code.
 
 Companion to the `how` skill. `how` answers what the code does and how it works. `why` answers what forces led to its shape.
 
+Each spawn below names a role line in the pstack model configuration section of `~/.codex/AGENTS.md` and a default. Use the line's model and effort, or the default if the section or line is missing. For `auto` or `inherit-parent`, use the parent model and effort. If `spawn_agent` rejects a configured model, use the default and say so. If it rejects the default, use the closest valid model ID of the same family from its error message; if none exists, ask for a model choice.
+
 ## Operating Posture
 
 Operate as a **careful, cautious, and precise investigator**. Be honest about what you know vs what you're inferring. Read `references/epistemics.md` for the full confidence framework and phrasing guide. The synthesizer must follow it.
@@ -78,7 +80,7 @@ Launch all matching investigators in a single message so they run concurrently. 
 
 Subagent config (each):
 - Tool: `spawn_agent` without the poteto-agent body
-- `model` and `reasoning_effort`: your configured why-investigators model and effort (upstream choice `grok-4.6-fast-xhigh`)
+- `model` and `reasoning_effort`: the `why investigators` line, default `grok-4.7-xhigh-fast`
 - Investigators still shouldn't write anything.
 
 Each investigator gets:
@@ -122,7 +124,7 @@ If your scope assessment suggests a single-commit trivial target where the PR de
 Spawn one synthesizer subagent:
 
 - Tool: `spawn_agent` without the poteto-agent body
-- `model` and `reasoning_effort`: your configured why-synthesizer model and effort (upstream choice `claude-fable-5-1-thinking-max`)
+- `model` and `reasoning_effort`: the `why synthesizer` line, default `claude-opus-5-5-max`
 - The synthesizer's quality check spot-verifies citations, which can require MCP access.
 
 The synthesizer gets:

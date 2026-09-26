@@ -27,19 +27,21 @@ For each candidate, inspect the first opening user record and normalize its `mes
 
 ### 2. Spawn three reviewers in parallel
 
-One message, three `Agent` calls, `subagent_type: pstack:general-purpose-<effort>`, explicit `model:` on each. Reviewers need MCP access for context lookups (tickets, chat threads, observability traces referenced in the transcript).
+One message, three `Agent` calls, `subagent_type: pstack:general-purpose-<effort>`, with `model` set as below. Reviewers need MCP access for context lookups (tickets, chat threads, observability traces referenced in the transcript).
 
-| Lens | `model` | Prompt template |
-|---|---|---|
-| Judgment | your configured reflect-judgment model (default `claude-fable-5-1-thinking-max`) | `references/judgment-reviewer.md` |
-| Tooling | your configured reflect-tooling model (default `gpt-5.6-sol-max`) | `references/tooling-reviewer.md` |
-| Divergent | your configured reflect-judgment model (default `claude-fable-5-1-thinking-max`) | `references/divergent-reviewer.md` |
+Each reviewer and the synthesizer name a role line in `~/.claude/rules/pstack-models.md` and a default. Set `model` to that line's value, or to the default if the rule or line is missing. For `auto` or `inherit-parent`, use the unsuffixed `general-purpose` subagent type and omit `model`. If the Agent tool rejects a slug, use the default and say so. If it rejects the default, use the closest valid slug of the same family from its error message.
+
+| Lens | Role line | Default `model` | Prompt template |
+|---|---|---|---|
+| Judgment | `reflect judgment, divergent, synthesizer` | `claude-opus-5-5-max` | `references/judgment-reviewer.md` |
+| Tooling | `reflect tooling` | `gpt-5.6-sol-max` | `references/tooling-reviewer.md` |
+| Divergent | `reflect judgment, divergent, synthesizer` | `claude-opus-5-5-max` | `references/divergent-reviewer.md` |
 
 Pass each template verbatim, substituting the transcript path or digest where marked. Reviewers return findings in the `Agent` response body.
 
 ### 3. Synthesize
 
-One `Agent` call, `subagent_type: pstack:general-purpose-<effort>`, using your configured reflect-judgment model (default `claude-fable-5-1-thinking-max`). The synthesizer's quality check includes spot-verifying citations, which can require MCP access. Use `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. The synthesizer returns a structured Accepted / Rejected / Backlog list.
+One `Agent` call, `subagent_type: pstack:general-purpose-<effort>`, with `model` from the `reflect judgment, divergent, synthesizer` line (default `claude-opus-5-5-max`). The synthesizer's quality check includes spot-verifying citations, which can require MCP access. Use `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. The synthesizer returns a structured Accepted / Rejected / Backlog list.
 
 ### 4. Structural enforcement check
 

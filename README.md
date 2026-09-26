@@ -1,12 +1,12 @@
 # pstack-uni
 
-[poteto の pstack](https://github.com/cursor/plugins/tree/e31650eea443aaea1e84cc15d88c13f40080b275/pstack) の Claude Code・Codex 向け移植版です。移植の実装作業は完了しています。実行環境の制約、ユーザー指定の除外範囲、実際に検証した範囲は以下に記載しています。
+[poteto の pstack](https://github.com/cursor/plugins/tree/e31650eea443aaea1e84cc15d88c13f40080b275/pstack) の Claude Code・Codex 向け移植版です。保守上の基点は pstack 0.15.2 です。本体・`setup-pstack` と役割別モデル設定の参照先には [本家 0.15.5](https://github.com/cursor/plugins/tree/ecc249f1e306fc64ddf83c7bed16cacf7c2239db/pstack) の変更を先行反映しています。実行環境の制約、ユーザー指定の除外範囲、実際に検証した範囲は以下に記載しています。
 
 ユーザー指定により、エージェントの実行環境はローカルに限定します。本家のクラウド worker は各環境のローカル子エージェントへ対応づけます。クラウド専用の routine と、ローカルを含む定期タイマーによるターン終了後の再開は移植対象外です。
 
 ## Claude Code
 
-`claude/` がプラグイン本体です。`poteto-mode` を明示起動し、プレイブックと下位スキルの内部ファイルを必要に応じて読みます。下位スキルを個別のコマンドとして登録しません。
+`claude/` がプラグイン本体です。`poteto-mode` とモデル設定用の `setup-pstack` を登録します。その他の45スキルは `poteto-mode` の内部ファイルとして必要に応じて読みます。
 
 Claude Code 内で marketplace を追加し、プラグインをインストールします。このリポジトリは非公開なので、アクセス権のある Git 認証が必要です。
 
@@ -15,7 +15,7 @@ Claude Code 内で marketplace を追加し、プラグインをインストー�
 /plugin install pstack@pstack-uni
 ```
 
-導入後は `/pstack:poteto-mode 調査したいことや実装したいこと` と依頼します。Claude Code 版はスキルとネイティブエージェント定義を一緒に導入するため、marketplace を使います。`npx skills add` でスキルだけを入れても、プラグイン全体の導入にはなりません。[marketplace の公式説明](https://code.claude.com/docs/en/plugin-marketplaces)。
+導入後は `/pstack:poteto-mode 調査したいことや実装したいこと` と依頼します。役割別モデルの設定には `/pstack:setup-pstack` を使います。Claude Code 版はスキルとネイティブエージェント定義を一緒に導入するため、marketplace を使います。`npx skills add` でスキルだけを入れても、プラグイン全体の導入にはなりません。[marketplace の公式説明](https://code.claude.com/docs/en/plugin-marketplaces)。
 
 開発時はリポジトリのルートで、プラグインを検証用のモデル・effort で直接読み込めます。
 
@@ -23,7 +23,7 @@ Claude Code 内で marketplace を追加し、プラグインをインストー�
 CLAUDE_CODE_ENABLE_TODO_TOOLS=1 claude --plugin-dir ./claude --model claude-opus-5 --effort low --settings '{"env":{"CLAUDE_CODE_EFFORT_LEVEL":"low"}}'
 ```
 
-入口は `/pstack:poteto-mode` です。検証では、子エージェントにも Claude Opus 5 / low を使う指定を依頼文に渡しています。`--settings` は、既存のユーザー設定に effort の環境変数がある場合も、この起動では low を優先させる指定です。設定ファイルには保存しません。
+ワークフローの入口は `/pstack:poteto-mode` です。検証では、子エージェントにも Claude Opus 5 / low を使う指定を依頼文に渡しています。`--settings` は、既存のユーザー設定に effort の環境変数がある場合も、この起動では low を優先させる指定です。設定ファイルには保存しません。
 
 入口・内部ファイル・子エージェント定義の読み込みと、背景委任を確認しています。通常の対話 CLI では、親→子→孫の起動と、孫の結果を子が集約して親へ返す流れも確認しました。非対話 `--print` では、子が先に終了すると孫の結果が親へ直接届きます。設定保存と Comment Sicko によるコメント編集も実行しました。スキル作成では、入口から公式 `skill-creator`、実装の委任、生成スキルの利用試験まで実行しました。調査では、本文が届いた後にモデルが手順を省略する実行がありました。この観測だけで移植コードの欠陥とは断定していません。コンパクション後の入口の再添付は確認できましたが、末尾が切り詰められました。
 
@@ -37,9 +37,10 @@ CLAUDE_CODE_ENABLE_TODO_TOOLS=1 claude --plugin-dir ./claude --model claude-opus
 
 ```sh
 npx skills add https://github.com/yor-dev/pstack-uni/tree/main/codex/.agents/skills/poteto-mode --agent codex --yes
+npx skills add https://github.com/yor-dev/pstack-uni/tree/main/codex/.agents/skills/setup-pstack --agent codex --yes
 ```
 
-プロジェクトの `.agents/skills/poteto-mode/` へ導入されます。clone 済みなら URL の代わりに `/path/to/pstack-uni/codex/.agents/skills/poteto-mode` を指定できます。入口は `$poteto-mode` 一つで、下位スキル・エージェント本文・参照資料・スクリプト・ライセンスはそのディレクトリ内に同梱します。自動起動は無効にしています。導入後に Codex を起動し、`$poteto-mode 調査したいことや実装したいこと` と依頼します。
+プロジェクトの `.agents/skills/poteto-mode/` と `.agents/skills/setup-pstack/` へ導入されます。clone 済みなら URL の代わりに、それぞれのローカルディレクトリを指定できます。その他の45スキル・エージェント本文・参照資料・スクリプトは `poteto-mode` に同梱します。`poteto-mode` の自動起動は無効です。導入後に Codex を起動し、作業には `$poteto-mode 調査したいことや実装したいこと`、モデル設定には `$setup-pstack` を使います。
 
 CLI V1 では、本家の深さ3の委任に合わせて `.codex/config.toml` の `[agents]` に `max_depth = 3` を設定します。同梱の `codex/.codex/config.toml` はこの設定だけを持ちます。既存設定がある場合は、このキーを統合してください。V2 ではこのキーは無視されます。
 
@@ -59,6 +60,7 @@ GPT-5.6 Luna / xhigh で、入口から Investigation・how・説明担当への
 | 操作 | Claude Code | Codex |
 | --- | --- | --- |
 | 明示起動、内部ファイル読込、ローカル委任 | 実行確認済み | 実行確認済み |
+| `setup-pstack` の独立登録・起動 | プラグイン検証済み。対話実行は未検証 | 一時導入と予算表示を確認。設定保存は未検証 |
 | native creator を使うスキル作成 | 成果物の作成・利用を実行確認 | 成果物の作成・動作を実行確認 |
 | 履歴、設定保存、コメント編集 | 形式を翻訳。保存・編集を実行確認 | 形式を翻訳。保存・編集を実行確認 |
 | goal の作成・取得 | ユーザーの `/goal` は存在。agent の `Skill(goal)` は UI コマンドとして拒否されることを実測。取得ツールも未発見 | native goal ツールで実行確認済み |
@@ -69,9 +71,9 @@ GPT-5.6 Luna / xhigh で、入口から Investigation・how・説明担当への
 
 Claude の agent 自身による goal 操作と、Codex の watcher 通知による終了済みターンの再開は、確認した実行環境では利用できません。これらを追加実装待ちの項目として扱わず、依存する本家の操作は非対応と明記します。コンパクション後の全文保持は移植の完成条件に含めず、各環境の標準のコンテキスト管理に従います。具体的な翻訳・実行条件・制約は [Claude Code への翻訳](docs/claude-code-translation.md) と [Codex への翻訳](docs/codex-translation.md) に記載しています。対象外のクラウド機能と定期タイマーによる再開は、今後の実装・検証項目に含めません。
 
-Opus 5 / low と GPT-5.6 Luna / xhigh は検証時だけの指定です。両版の配布ファイルは本家の役割別モデル選択を維持します。常用環境へのインストールやユーザー設定の保存は行っていません。
+Opus 5 / low と GPT-5.6 Luna / xhigh は検証時だけの指定です。両版の役割別モデル選択は本家 0.15.5 に合わせています。常用環境へのインストールやユーザー設定の保存は行っていません。
 
-本家は pstack v0.15.2、コミット `e31650eea443aaea1e84cc15d88c13f40080b275` を基準としています。移植したファイルのライセンスは [MIT](claude/LICENSE) です。
+全ファイルの比較基点は pstack 0.15.2、コミット `e31650eea443aaea1e84cc15d88c13f40080b275` のままです。0.15.5 全体を移植したものではありません。移植したファイルのライセンスは [MIT](claude/LICENSE) です。
 
 ## 本家の更新への対応
 

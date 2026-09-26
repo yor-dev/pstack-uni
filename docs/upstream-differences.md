@@ -1,6 +1,6 @@
 # 本家との差分監査
 
-2026-09-20。比較対象は `cursor/plugins` のコミット `e31650eea443aaea1e84cc15d88c13f40080b275` にある pstack 0.15.2 と、このリポジトリの `claude/`・`codex/`。本家の最新版との比較ではない。本家チェックアウトの HEAD を確認し、配置変更を対応づけてファイルを比較した。
+2026-09-20 に監査し、2026-09-27 に更新。全ファイルの比較基点は `cursor/plugins` のコミット `e31650eea443aaea1e84cc15d88c13f40080b275` にある pstack 0.15.2 と、このリポジトリの `claude/`・`codex/`。本体・`setup-pstack` と役割別モデル設定の直接の参照先には、2026-09-27 時点の本家 0.15.5（`ecc249f1e306fc64ddf83c7bed16cacf7c2239db`）の変更を先行反映した。本家 0.15.5 全体の移植ではない。
 
 意図した移植差分に加え、一般名詞の誤置換、内部ファイル化の反映漏れ、除外理由の誤記が見つかった。直前の「実装完了」という断言には、これらを見落とした問題がある。下記3種類の不備は監査後に両版の該当箇所を修正した。
 
@@ -8,9 +8,9 @@
 
 | 項目 | 本家 | Claude Code 版 | Codex 版 |
 | --- | --- | --- | --- |
-| 公開するスキル | `skills/` の47スキル。下位スキルも個別に明示起動可能 | 公開は `/pstack:poteto-mode` 一つ。下位46個は `internal/<name>/instructions.md` | 公開は `$poteto-mode` 一つ。下位46個は同じ内部ファイル構成 |
-| 内部化の意味 | 下位スキルをネイティブスキルとして呼ぶ | 内部ファイルを読み、その指示を適用する。個別のネイティブコマンドとしては登録しない | 同左 |
-| 登録設定 | `disable-model-invocation`、`mode`、`reminder`、`icon`、`color` | 入口の明示起動フラグを保持。`mode/icon/color` は除去。`reminder` はユーザー指定で除外 | `agents/openai.yaml` の `allow_implicit_invocation: false`。`mode/icon/color` は移さず、`reminder` は除外 |
+| 公開するスキル | `skills/` の47スキル。下位スキルも個別に明示起動可能 | `/pstack:poteto-mode` と `/pstack:setup-pstack`。その他45個は `internal/<name>/instructions.md` | `$poteto-mode` と `$setup-pstack`。その他45個は同じ内部ファイル構成 |
+| 内部化の意味 | 各スキルをネイティブスキルとして呼ぶ | ワークフロー用の内部ファイルを読み、その指示を適用する。`setup-pstack` はネイティブスキルとして登録する | 同左 |
+| 登録設定 | `setup-pstack` 以外の46スキルに `disable-model-invocation`。`poteto-mode` には `mode`、`reminder`、`icon`、`color` もある | `poteto-mode` は明示起動専用。`setup-pstack` は自動選択を禁止しない。`mode/icon/color` は除去し、`reminder` はユーザー指定で除外 | `poteto-mode` の `agents/openai.yaml` は `allow_implicit_invocation: false`。`setup-pstack` に同設定は置かない。`mode/icon/color` は移さず、`reminder` は除外 |
 | 委任 | `Task`、`generalPurpose`、`poteto-agent`、Comment Sicko | native `Agent` と `pstack:` 名前空間。`is_background` を `background` へ変更 | native `spawn_agent`。エージェント本文を内部ファイルから読み、子の `message` に渡す |
 | 指示の優先度 | ネイティブエージェント定義 | ネイティブエージェント定義を使う。本文なしの custom general-purpose と組み込み general-purpose の同一性は未実証 | エージェント本文を依頼メッセージで渡すため、ネイティブ定義と同じ指示優先度とは主張しない |
 | 独立した子の文脈 | Cursor の subagent 実行 | Claude の標準 subagent 実行 | V1 は `fork_context: false`、V2 は `fork_turns: "none"` |
@@ -24,7 +24,7 @@
 | 作成するスキルの配置 | `.cursor/skills/` 等 | `.claude/skills/` 等。`automate-me` は直接の skill ディレクトリへ配置 | `.agents/skills/`、`~/.codex/skills/` 等 |
 | 外部依存の指示 | 別プラグイン cursor-team-kit の `deslop`、`control-cli`、`control-ui` | 3指示書と MIT ライセンスを内部同梱 | 同左 |
 
-本家の役割別モデル選択・パネル人数・予算ラベルは保持している。ただし、それらのモデルを Claude Code や Codex からすべて起動できるという意味ではない。setup は同一モデルの利用可能な指定へ解決し、存在しない選択はユーザーに選択を求める。一方、Interrogate に元からある「モデル指定を拒否された場合に近いモデルへ差し替える」手順は維持している。Opus 5 / low と GPT-5.6 Luna / xhigh は検証時の指定であり、配布版の全役割の既定値ではない。
+本家 0.15.5 の役割別モデル選択・3人構成のパネル・予算ラベルを保持している。ただし、それらのモデルを Claude Code や Codex からすべて起動できるという意味ではない。setup は同一モデルの利用可能な指定へ解決し、存在しない選択はユーザーに選択を求める。モデル指定が後から拒否された場合の本家 0.15.5 の代替手順も、対応する下位ファイルへ移した。Opus 5 / low と GPT-5.6 Luna / xhigh は検証時の指定であり、配布版の全役割の既定値ではない。
 
 creator の接続先は本家と異なるため、作成処理の実装自体が同一ではない。description 改善や反復を求める指示は本家由来であり、専用の同名コマンドがないことだけを移植の不具合とは扱わない。
 
@@ -34,7 +34,7 @@ creator の接続先は本家と異なるため、作成処理の実装自体が
 - `readonly` と agent mode の権限指定を削除。本家本文の「調査者はコードを書かない」等の作業範囲は残す。
 - クラウド worker をローカル子エージェントへ変更。コードを書く worker は個別の local worktree を使い、開始 branch とパスを依頼へ渡す。
 - クラウド URL、teleport、VM、cloud-sleeper、クラウドセッションの継続・回収を除外。ローカルプロセス終了後もクラウドで継続する性質は再現しない。
-- `make-bot-ui` の実行手順を除外説明と固定した本家リンクへ置換。したがって、内部ファイルが46個あっても46個すべての元手順を提供しているわけではない。
+- `make-bot-ui` の実行手順を除外説明と固定した本家リンクへ置換。したがって、内部ファイルが45個あっても45個すべての元手順を提供しているわけではない。
 - 30分ごとの起動、sleep による起動通知、予備の heartbeat を削除。監査の内容は残し、別の自動起動条件は追加していない。計画テンプレートの tick prompt は定期起動を伴わない監査項目へ整理。
 - `check-plan.mjs` から30分の定期処理を必須とする条件を削除。Codex 版は goal 必須マーカーを `/goal` から `create_goal` へ変更。
 
@@ -74,7 +74,7 @@ Cursor の組み込み babysit を使わないという文や、worktree cleanup
 
 現在の固定コミット・全ファイル対応・除外理由・移植専用ファイルは [maintenance/upstream.json](../maintenance/upstream.json)、現在の完全な変更は [Claude パッチ](../maintenance/patches/claude.patch) と [Codex パッチ](../maintenance/patches/codex.patch) に保存している。対応表どおりに配置した原文へ各パッチを適用し、現在の配布版を復元できることを確認した。
 
-本家更新時の三者比較、追加・削除・競合の処理、反映後の検証は [更新手順](updating-upstream.md) に記載する。この整備では本家のバージョンや実行時のスキル本文は変更していない。
+本家更新時の三者比較、追加・削除・競合の処理、反映後の検証は [更新手順](updating-upstream.md) に記載する。保守基点のバージョンは 0.15.2 のまま維持し、上記の限定した実行時指示だけを 0.15.5 に合わせた。
 
 ## 過去の監査用の生差分
 

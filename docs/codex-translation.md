@@ -1,6 +1,6 @@
 # Codex への翻訳
 
-本家 pstack v0.15.2、`cursor/plugins@e31650eea443aaea1e84cc15d88c13f40080b275` を基準とする。2026-09-20 更新。移植の実装作業は完了。入口・委任・設定保存・コメント編集などを実行検証した。以下に実行環境の制約と、実施した試験・未検証の範囲を記録する。
+本家 pstack v0.15.2、`cursor/plugins@e31650eea443aaea1e84cc15d88c13f40080b275` を基準とする。2026-09-27 更新。移植の実装作業は完了。入口・委任・設定保存・コメント編集などを実行検証した。以下に実行環境の制約と、実施した試験・未検証の範囲を記録する。
 
 ユーザー指定により、クラウドは使用しない。本家のクラウド worker はローカルの `spawn_agent` に対応づける。担当の人数・役割・モデル選択・結果集約は維持する。クラウド専用の定期起動、routine、クラウドセッションの継続・回収は対象外とし、未完了の開発項目には数えない。
 
@@ -28,9 +28,12 @@ codex/
       agents/poteto-agent.md
       agents/comment-sicko.md
       ...
+  .agents/skills/setup-pstack/
+    SKILL.md
+    LICENSE
 ```
 
-公開スキルは `poteto-mode` 一つ。46個の下位スキルは通常の内部ファイルとして配置し、元の参照資料とスクリプトも保持する。`agents/openai.yaml` の `allow_implicit_invocation: false` で明示起動専用にし、入口は `$poteto-mode` とする。[公式のスキル登録と呼び出しポリシー](https://developers.openai.com/ja-JP/docs/build-skills)。`mode`、`icon`、`color` は Codex の同名機能として扱わない。`reminder` と `readonly` の権限制限はユーザー指定で対象外。本文にある調査の作業範囲は保持する。
+公開スキルは `poteto-mode` と `setup-pstack`。その他45個の下位スキルは通常の内部ファイルとして配置し、元の参照資料とスクリプトも保持する。`poteto-mode` は `agents/openai.yaml` の `allow_implicit_invocation: false` で明示起動専用にし、入口を `$poteto-mode` とする。モデル設定は `$setup-pstack` から起動する。[公式のスキル登録と呼び出しポリシー](https://developers.openai.com/ja-JP/docs/build-skills)。`mode`、`icon`、`color` は Codex の同名機能として扱わない。`reminder` と `readonly` の権限制限はユーザー指定で対象外。本文にある調査の作業範囲は保持する。
 
 ## 委任の対応
 
@@ -54,6 +57,8 @@ codex/
 本家の Grok・GPT・Claude の役割表、パネル人数、予算ラベルを保持する。検証時だけ親子を GPT-5.6 Luna / xhigh に指定する。利用できない本家モデルをすべて Luna に置換する設定は作らない。
 
 setup は、本家モデルの選択を利用可能な同じモデルの ID と reasoning effort に対応づける。`unlimited` は各役割の effort を維持する。保存する値は `{"model": "...", "reasoning_effort": "..."}`、親を使う指定は元の二つの別名のままとする。常時適用ルールは `~/.codex/AGENTS.md` 内の pstack 専用区画へ翻訳し、既存の他の指示は保持する。実際のユーザー設定には書き込んでいない。setup の対話全体は未検証。
+
+2026-09-27 に一時ディレクトリへ2スキルを導入し、Codex CLI の読み取り専用実行で `$setup-pstack` が4つの予算選択肢を返すことを確認した。設定ファイルへの保存は試験していない。
 
 この環境で公開された子のモデル一覧は OpenAI のモデルであり、本家の Grok や Claude を呼び出せる根拠はない。モデル選択を定義として保持したことと、全既定値を実行できることは別である。`interrogate` のモデル拒否時の代替選択は本家にもある手順であり、移植側で新設した処理ではない。
 

@@ -1,6 +1,6 @@
 # Claude Code への翻訳
 
-対象は本家 pstack v0.15.2、`cursor/plugins@e31650eea443aaea1e84cc15d88c13f40080b275`。2026-09-20 更新。原文は [poteto-mode][upstream-mode]、[how][upstream-how]、[poteto-agent][upstream-agent]、[調査プレイブック][upstream-investigation]。移植の実装作業は完了。以下に実行環境の制約と、実施した試験・未検証の範囲を記録する。
+対象は本家 pstack v0.15.2、`cursor/plugins@e31650eea443aaea1e84cc15d88c13f40080b275`。2026-09-27 更新。原文は [poteto-mode][upstream-mode]、[how][upstream-how]、[poteto-agent][upstream-agent]、[調査プレイブック][upstream-investigation]。移植の実装作業は完了。以下に実行環境の制約と、実施した試験・未検証の範囲を記録する。
 
 本家が指定する条件・手順・委譲・段階的な読み込みを維持し、Cursor 固有の表現を Claude Code の対応機能へ翻訳する。以下は開発者向けの翻訳記録であり、実行時にモデルへ渡す追加指示ではない。
 
@@ -10,7 +10,7 @@
 
 2026-09-20 のユーザー指定により、ローカルを含む定期タイマーによるターン終了後の再開も対象外とする。Autopilot の30分ごとの起動と計画テンプレートの定期起動手順、Orchestrate と Autonomous run の予備 heartbeat を削除した。監査内容は残し、別の自動起動条件は追加しない。`check-plan.mjs` も30分の定期処理を必須にしない。子の完了通知や watcher の出力イベントとは別の除外指定である。 定期起動を含まない両版の計画テンプレートは検証を通り、goal 作成を除いた計画は該当項目で失敗した。記録は `tmp/experiments/no-timed-resume/`。
 
-ユーザー指定により、下位スキルは個別登録せず、入口の内部ファイルとして実装する。以下の初期試験で前提にしていた「本家の全スキルを個別登録する構造を維持する」という制約は撤回した。
+ユーザー指定により、ワークフロー用の下位45スキルは個別登録せず、入口の内部ファイルとして実装する。モデル設定用の `setup-pstack` は独立したネイティブスキルとして登録する。以下の初期試験で前提にしていた「本家の全スキルを個別登録する構造を維持する」という制約は撤回した。
 
 ユーザー指定により、`reminder` は Claude Code 版・Codex 版ともに移植対象から除外する。Claude 版の frontmatter から削除し、本文への移動や代替フックは行わない。本家の [導入 PR #144](https://github.com/cursor/plugins/pull/144) は、開始時に本文、後続ターンに reminder を渡すと説明している。初回の実行記録に reminder がないことだけでは、指示の欠落やプレイブック省略の原因を示せない。
 
@@ -37,9 +37,13 @@ claude/
       unslop/instructions.md
       principle-*/instructions.md
       ...
+  skills/setup-pstack/
+    SKILL.md
 ```
 
-`poteto-mode/SKILL.md` だけをネイティブスキルとして登録する。46個の下位スキルは `internal/<name>/instructions.md` とし、参照資料やスクリプトをそれぞれのフォルダに保持する。内部ファイルではスキル登録用の `disable-model-invocation` フィールドを除く。自動選択されるネイティブスキルに変更するものではない。
+`poteto-mode/SKILL.md` と `setup-pstack/SKILL.md` をネイティブスキルとして登録する。その他45個の下位スキルは `internal/<name>/instructions.md` とし、参照資料やスクリプトをそれぞれのフォルダに保持する。内部ファイルではスキル登録用の `disable-model-invocation` フィールドを除く。自動選択されるネイティブスキルに変更するものではない。
+
+以下の `internal-loading` 試験は、`setup-pstack` を独立登録する前に行った。現行版では `claude plugin validate ./claude` と marketplace の検証に合格した。`/pstack:setup-pstack` の実行試験は CLI が未ログインとして拒否したため、登録後の対話動作は未確認。
 
 本家にある参照を配置先のリンクへ翻訳する。本文を読む条件、プレイブックの選択、探索・説明の順序、原則の適用条件は原文に従う。この配置変更は Cursor のモード継続機能の対応まで解決するものではない。
 
@@ -141,7 +145,7 @@ poteto-agent の子は入口ファイルを読まず、対象コードだけを�
 
 | 本家の箇所・表現 | Claude Code の表現 | 判定・根拠 |
 | --- | --- | --- |
-| `.cursor-plugin/plugin.json`、`skills/`、`agents/` | `.claude-plugin/plugin.json`、入口の `skills/poteto-mode/` と `agents/` | ユーザー指定の内部ファイル構成。プラグインの登録形式は[公式仕様][plugins]に対応。 |
+| `.cursor-plugin/plugin.json`、`skills/`、`agents/` | `.claude-plugin/plugin.json`、`skills/poteto-mode/`、`skills/setup-pstack/` と `agents/` | その他45スキルは内部ファイル構成。プラグインの登録形式は[公式仕様][plugins]に対応。 |
 | `poteto-mode/SKILL.md` の `name: Poteto Mode` | `name: poteto-mode` | プラグインでは `name` がコマンド末尾を決めるため、既存の `/poteto-mode` という識別子を維持する。[スキル命名仕様][names]。本文の見出しは維持。 |
 | `/poteto-mode` | `/pstack:poteto-mode` | プラグイン名前空間。[スキル命名仕様][names]。短縮名も利用できるが、同名衝突を避けた試験では完全名を使う。 |
 | `Task` による委譲 | `Agent` | 仕様対応。[ツール一覧][tools]。タスク一覧の `TaskCreate` とは別機能。 |
@@ -161,10 +165,10 @@ poteto-agent の子は入口ファイルを読まず、対象コードだけを�
 
 | 本家の箇所 | 対応内容と制約 | 採用しない変更 |
 | --- | --- | --- |
-| `disable-model-invocation: true` と、起動済みモードから `how` 等へのルーティング | 入口は明示起動を維持する。下位スキルはユーザー指定の内部ファイル構成へ変更し、必要時に本文を取得する。 | 下位スキルを自動選択されるネイティブスキルとして公開すること。 |
+| `disable-model-invocation: true` と、起動済みモードから `how` 等へのルーティング | `poteto-mode` は明示起動を維持する。`how` 等45スキルは内部ファイル構成へ変更し、必要時に本文を取得する。`setup-pstack` は本家と同じく自動選択を禁止しない。 | ワークフロー用の45スキルを自動選択されるネイティブスキルとして公開すること。 |
 | `mode: true` | Claude の公開 frontmatter 表に同名設定はないため、配布版の frontmatter から除いた。明示起動後のコンテキスト管理は Claude の標準機能に従い、コンパクション後の全文保持は完成条件にしない。`reminder` はユーザー指定で対象外。[スキル設定][skills] | セッション開始時の独自誘導、`context: fork` の追加。 |
 | `icon`、`color` | Claude のスキル設定表に対応がないため、配布版の frontmatter から除いた。 | 別の実行条件として流用すること。 |
-| `/setup-pstack` のモデル検出・reasoning budget | 保存先・モデルと effort の分離・native 定義選択は実装。検出した指定が Agent 引数で使えることと、同じモデル系列への対応が必要。現環境で利用できない本家モデルが残る。対話設定全体は未検証。 | 本家のモデル選択を検証用の固定モデルへ全面的に書き換えること。 |
+| `/setup-pstack` のモデル検出・reasoning budget | `/pstack:setup-pstack` として登録。保存先・モデルと effort の分離・native 定義選択は実装。検出した指定が Agent 引数で使えることと、同じモデル系列への対応が必要。現環境で利用できない本家モデルが残る。対話設定全体は未検証。 | 本家のモデル選択を検証用の固定モデルへ全面的に書き換えること。 |
 | Cursor 組み込み `create-skill` | Claude の公式 `skill-creator:skill-creator` へ接続。作成・検証・必要時の description 改善を対応づけた。公式 plugin の導入が必要。 | pstack が要求する改善ループの削除や、独自の合格条件追加。 |
 
 ## 履歴・依存指示書・定期起動
