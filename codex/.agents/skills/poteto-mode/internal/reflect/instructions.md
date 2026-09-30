@@ -27,9 +27,9 @@ For each candidate, inspect the first `session_meta` record and then the visible
 
 ### 2. Spawn three reviewers in parallel
 
-One message, three ordinary `spawn_agent` calls without the poteto-agent body, with model and effort set as below. Reviewers need MCP access for context lookups (tickets, chat threads, observability traces referenced in the transcript). Put each reviewer template in the native spawn message; do not rely on a Cursor agent type or custom-agent metadata.
+Three parallel subagents without the poteto-agent body, with model and effort set as below. Reviewers need MCP access for context lookups (tickets, chat threads, observability traces referenced in the transcript). Give each reviewer its template; do not rely on a Cursor agent type or custom-agent metadata.
 
-Each reviewer and the synthesizer name a role line in the pstack model configuration section of `~/.codex/AGENTS.md` and a default. Use the line's model and effort, or the default if the section or line is missing. For `auto` or `inherit-parent`, use the parent model and effort. If `spawn_agent` rejects a configured model, use the default and say so. If it rejects the default, use the closest valid model ID of the same family from its error message; if none exists, ask for a model choice.
+Each reviewer and the synthesizer name a role line in the pstack model configuration section of the project-root `AGENTS.md` and a default. Use the line's model and effort, or the default if the section or line is missing. For `auto` or `inherit-parent`, use the parent model and effort. If the configured model is unavailable, use the default and say so. If the default is unavailable, use the closest valid model ID of the same family from the available models; if none exists, ask for a model choice.
 
 | Lens | Role line | Default model | Prompt template |
 |---|---|---|---|
@@ -41,7 +41,7 @@ Pass each template verbatim, substituting the transcript path or digest where ma
 
 ### 3. Synthesize
 
-One ordinary `spawn_agent` call without the poteto-agent body, using the `reflect judgment, divergent, synthesizer` line (default `claude-opus-5-5-max`). The synthesizer's quality check includes spot-verifying citations, which can require MCP access. Use `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. The synthesizer returns a structured Accepted / Rejected / Backlog list.
+One subagent without the poteto-agent body, using the `reflect judgment, divergent, synthesizer` line (default `claude-opus-5-5-max`). The synthesizer's quality check includes spot-verifying citations, which can require MCP access. Use `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. The synthesizer returns a structured Accepted / Rejected / Backlog list.
 
 ### 4. Structural enforcement check
 
@@ -58,7 +58,7 @@ For each approved Accepted item, follow the Routing field exactly. Body edits ma
 - Trivial existing-skill edit (a one-line bullet, a tightened sentence, a stale fact corrected): parent does directly.
 - Substantive existing-skill edit (a new section, a new pattern table, more than ~10 lines): hand to Codex's `skill-creator` skill and run its draft / test / iterate loop.
 - `tune description: <skill path>` (a native catalog skill didn't trigger when it should have): hand to Codex's `skill-creator` and run a description-optimization loop.
-- `new skill via skill-creator: <kebab-name>`: hand creation to `skill-creator`. Do not invent the shape ad hoc.
+- `new skill via native creator: <kebab-name>`: hand creation to `skill-creator`. Do not invent the shape ad hoc.
 
 If your environment ships a SKILL.md validator, run it on every touched native registered skill before declaring done. Internal instruction files are not registered skills. Skip this step if no validator is available.
 

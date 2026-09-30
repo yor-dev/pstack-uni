@@ -1,7 +1,7 @@
 {
   "repository": "https://github.com/cursor/plugins.git",
-  "commit": "e31650eea443aaea1e84cc15d88c13f40080b275",
-  "version": "0.15.2",
+  "commit": "ecc249f1e306fc64ddf83c7bed16cacf7c2239db",
+  "version": "0.15.5",
   "scopes": [
     "pstack",
     "cursor-team-kit/LICENSE",

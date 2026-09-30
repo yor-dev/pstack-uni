@@ -20,7 +20,7 @@ Scan for:
 Findings must point to skills, tools, or MCPs invoked in this transcript. Speculative routings to skills the parent never opened do not count. To check whether a skill was used, scan the transcript for:
 
 - file-reading tool calls against a native `SKILL.md` or internal `instructions.md` file (project `.agents/skills/`, user-level skills, or installed plugin paths)
-- `spawn_agent` messages that name a skill or internal instructions path
+- subagent task descriptions that name a skill or internal instructions path
 - tool calls (`exec`, MCP, and related native tools) that match a skill's documented commands
 
 Two valid finding shapes:
@@ -30,7 +30,7 @@ Two valid finding shapes:
 
 If a skill was neither invoked nor a missed-trigger candidate, drop it.
 
-Surface 3-5 durable learnings. For each:
+List each durable learning you find. For each:
 - Principle: one sentence describing what generalizes. State the rule, not the label, no name-dropping.
 - Evidence: the exact moment in the transcript that surfaced it (turn number or short quote).
 - Routing: most relevant existing instruction file (give its `SKILL.md`, `instructions.md`, or caller playbook path as it appears in the transcript, plus the relevant section), OR `tune description: <skill path>` for a native catalog skill that should have triggered but didn't, OR "new skill: <kebab-name>" if no existing skill is a real home.

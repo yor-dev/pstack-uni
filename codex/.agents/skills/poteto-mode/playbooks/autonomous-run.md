@@ -1,11 +1,11 @@
 ### Autonomous run
 
-Compatibility: the Cursor `/loop` wake operation referenced below has no verified Codex equivalent in the tested runtime. That operation remains unported.
+Compatibility: Cursor's `/loop` wake operation used upstream has no verified Codex equivalent in the tested runtime. That operation remains unported.
 
 **You own the exit condition. Define done, then drive to it without stopping.**
 
 1. State the exit condition as a checkable predicate before the first iteration (tests green, repro fixed, all N PRs merged, pixel-diff zero).
-2. Pick the wake mechanism using Cursor's `/loop` command (a built-in, not a pstack skill). An event to watch (CI, a merge, a ref advancing) gets a watcher subagent that wakes you on the event.
+2. An event to watch (CI, a merge, a ref advancing) gets a watcher subagent. Keep the parent turn active until the watcher returns the event.
 3. Each iteration makes the smallest change the evidence justifies, verifies it against the predicate, commits if it advanced, discards changes that didn't help. Belt-and-suspenders that "might help" gets reverted, not left to ride.
    Sequence the work via the [**sequence-verifiable-units**](../internal/principle-sequence-verifiable-units/instructions.md) principle skill, verifying each unit before the next instead of batching checks at the end.
 4. Mid-run discoveries are yours. Address broken skills, related bugs, flaky verifiers, review noise, tooling failures, orphaned follow-ups, and fixable drift yourself via poteto-mode. Put out-of-band fixes in their own PR. Do not park reversible work for the human or ask the user. Surface only irreversible actions, genuine product or preference calls no experiment can settle, or a real dead end. Keep the predicate as the main drive, and return to it after each side fix.

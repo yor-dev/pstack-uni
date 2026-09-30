@@ -27,9 +27,9 @@ For each candidate, inspect the first opening user record and normalize its `mes
 
 ### 2. Spawn three reviewers in parallel
 
-One message, three `Agent` calls, `subagent_type: pstack:general-purpose-<effort>`, with `model` set as below. Reviewers need MCP access for context lookups (tickets, chat threads, observability traces referenced in the transcript).
+Spawn three reviewers concurrently. Reviewers need MCP access for context lookups (tickets, chat threads, observability traces referenced in the transcript).
 
-Each reviewer and the synthesizer name a role line in `~/.claude/rules/pstack-models.md` and a default. Set `model` to that line's value, or to the default if the rule or line is missing. For `auto` or `inherit-parent`, use the unsuffixed `general-purpose` subagent type and omit `model`. If the Agent tool rejects a slug, use the default and say so. If it rejects the default, use the closest valid slug of the same family from its error message.
+Each reviewer and the synthesizer name a role line in the pstack model configuration section of the project-root `AGENTS.md` and a default. Use that line's `{model, effort}`, or the default if the line is missing. `auto` and `inherit-parent` mean the parent model and effort. If a configured model is unavailable, use the role's default and say so. If that default is also unavailable, use the closest available model in the same family. If none exists, ask the user to choose an available model.
 
 | Lens | Role line | Default `model` | Prompt template |
 |---|---|---|---|
@@ -37,11 +37,11 @@ Each reviewer and the synthesizer name a role line in `~/.claude/rules/pstack-mo
 | Tooling | `reflect tooling` | `gpt-5.6-sol-max` | `references/tooling-reviewer.md` |
 | Divergent | `reflect judgment, divergent, synthesizer` | `claude-opus-5-5-max` | `references/divergent-reviewer.md` |
 
-Pass each template verbatim, substituting the transcript path or digest where marked. Reviewers return findings in the `Agent` response body.
+Pass each template verbatim, substituting the transcript path or digest where marked. Reviewers return findings in their reports.
 
 ### 3. Synthesize
 
-One `Agent` call, `subagent_type: pstack:general-purpose-<effort>`, with `model` from the `reflect judgment, divergent, synthesizer` line (default `claude-opus-5-5-max`). The synthesizer's quality check includes spot-verifying citations, which can require MCP access. Use `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. The synthesizer returns a structured Accepted / Rejected / Backlog list.
+Spawn one synthesizer subagent using the `reflect judgment, divergent, synthesizer` line (default `claude-opus-5-5-max`). Its quality check includes spot-verifying citations, which can require MCP access. Use `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. The synthesizer returns a structured Accepted / Rejected / Backlog list.
 
 ### 4. Structural enforcement check
 
@@ -56,9 +56,9 @@ Backlog items file to whatever devex / backlog tracker your team uses automatica
 For each approved Accepted item, follow the Routing field exactly. Body edits may target a native `SKILL.md`, internal `instructions.md`, or the caller's existing selection instruction in an entry skill, internal instructions file, or playbook:
 
 - Trivial existing-skill edit (a one-line bullet, a tightened sentence, a stale fact corrected): parent does directly.
-- Substantive existing-skill edit (a new section, a new pattern table, more than ~10 lines): hand to Claude's native `skill-creator` skill and run its draft / test / iterate loop.
-- `tune description: <skill path>` (a native catalog skill didn't trigger when it should have): hand to Claude's native `skill-creator` and run its description-optimization loop.
-- `new skill via skill-creator: <kebab-name>`: hand creation to `skill-creator`. Do not invent the shape ad hoc.
+- Substantive existing-skill edit (a new section, a new pattern table, more than ~10 lines): hand to Claude Code's official `skill-creator:skill-creator` plugin skill and run its draft / test / iterate loop.
+- `tune description: <skill path>` (a native catalog skill didn't trigger when it should have): hand to Claude Code's official `skill-creator:skill-creator` plugin skill and run its description-optimization loop.
+- `new skill via native creator: <kebab-name>`: hand creation to `skill-creator:skill-creator`. Do not invent the shape ad hoc.
 
 If your environment ships a SKILL.md validator, run it on every touched native registered skill before declaring done. Internal instruction files are not registered skills. Skip this step if no validator is available.
 

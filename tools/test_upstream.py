@@ -2,6 +2,7 @@ import contextlib
 import copy
 import io
 import json
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -118,6 +119,33 @@ class UpstreamTests(unittest.TestCase):
         current = dict(self.current, **{"codex/unclassified.md": text("new\n")})
         with self.assertRaisesRegex(ValueError, "Destination inventory mismatch"):
             upstream.validate(self.manifest, self.source, current)
+
+    def test_commands_stop_before_patch_work_when_generated_files_are_stale(self):
+        upstream.write_tree(self.root, self.current)
+        manifest_path = self.root / "maintenance/upstream.json"
+        manifest_path.parent.mkdir(parents=True)
+        manifest_path.write_text(json.dumps(self.manifest))
+        generator = self.root / "tools/generate.py"
+        generator.parent.mkdir(parents=True)
+        generator.write_text(
+            'import sys\n'
+            'assert sys.argv[1:] == ["--check"]\n'
+            'raise SystemExit("generated skill is stale")\n'
+        )
+        patch_dir = self.root / "maintenance/patches"
+        patch_dir.mkdir()
+        claude_patch = patch_dir / "claude.patch"
+        claude_patch.write_bytes(b"original patch")
+
+        with patch.object(upstream, "ROOT", self.root), patch.object(upstream, "MANIFEST", manifest_path):
+            for command in ("refresh", "check", "compare"):
+                args = ["upstream.py", command, "--source", str(self.repo)]
+                if command == "compare":
+                    args.extend(("--to", self.commit, "--out", str(self.root / "candidate")))
+                with self.subTest(command=command), patch.object(sys, "argv", args):
+                    with self.assertRaisesRegex(ValueError, "generated skill is stale"):
+                        upstream.main()
+                    self.assertEqual(claude_patch.read_bytes(), b"original patch")
 
     def test_version_bump_needs_no_patch_update_but_metadata_changes_do(self):
         self.add_plugin()

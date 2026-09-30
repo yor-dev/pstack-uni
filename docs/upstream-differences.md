@@ -1,6 +1,6 @@
 # 本家との差分監査
 
-2026-09-20 に監査し、2026-09-27 に更新。全ファイルの比較基点は `cursor/plugins` のコミット `e31650eea443aaea1e84cc15d88c13f40080b275` にある pstack 0.15.2 と、このリポジトリの `claude/`・`codex/`。本体・`setup-pstack` と役割別モデル設定の直接の参照先には、2026-09-27 時点の本家 0.15.5（`ecc249f1e306fc64ddf83c7bed16cacf7c2239db`）の変更を先行反映した。本家 0.15.5 全体の移植ではない。
+2026-09-20 に監査し、2026-09-28 に更新。全ファイルの比較基点は `cursor/plugins` のコミット `ecc249f1e306fc64ddf83c7bed16cacf7c2239db` にある pstack 0.15.5 と、このリポジトリの `claude/`・`codex/`。0.15.2 から 0.15.5 への変更は共通原本に反映し、環境固有の翻訳とユーザー指定の除外は下記に記録する。
 
 意図した移植差分に加え、一般名詞の誤置換、内部ファイル化の反映漏れ、除外理由の誤記が見つかった。直前の「実装完了」という断言には、これらを見落とした問題がある。下記3種類の不備は監査後に両版の該当箇所を修正した。
 
@@ -12,11 +12,12 @@
 | 内部化の意味 | 各スキルをネイティブスキルとして呼ぶ | ワークフロー用の内部ファイルを読み、その指示を適用する。`setup-pstack` はネイティブスキルとして登録する | 同左 |
 | 登録設定 | `setup-pstack` 以外の46スキルに `disable-model-invocation`。`poteto-mode` には `mode`、`reminder`、`icon`、`color` もある | `poteto-mode` は明示起動専用。`setup-pstack` は自動選択を禁止しない。`mode/icon/color` は除去し、`reminder` はユーザー指定で除外 | `poteto-mode` の `agents/openai.yaml` は `allow_implicit_invocation: false`。`setup-pstack` に同設定は置かない。`mode/icon/color` は移さず、`reminder` は除外 |
 | 委任 | `Task`、`generalPurpose`、`poteto-agent`、Comment Sicko | native `Agent` と `pstack:` 名前空間。`is_background` を `background` へ変更 | native `spawn_agent`。エージェント本文を内部ファイルから読み、子の `message` に渡す |
+| 子の起動指示 | `Task` の `subagent_type` と `run_in_background` を本文で指定 | 役割、effort 別の定義、非同期実行、新しい子の文脈を指示。`Agent` の引数名は指定しない | 役割の本文、非同期実行、新しい子の文脈を指示。`spawn_agent` の引数名は指定しない |
 | 指示の優先度 | ネイティブエージェント定義 | ネイティブエージェント定義を使う。本文なしの custom general-purpose と組み込み general-purpose の同一性は未実証 | エージェント本文を依頼メッセージで渡すため、ネイティブ定義と同じ指示優先度とは主張しない |
-| 独立した子の文脈 | Cursor の subagent 実行 | Claude の標準 subagent 実行 | V1 は `fork_context: false`、V2 は `fork_turns: "none"` |
+| 独立した子の文脈 | Cursor の subagent 実行 | 新しい子の文脈を本文で要求 | 新しい子の文脈を本文で要求。V1 の `fork_context: false` と V2 の `fork_turns: "none"` は本文から削除 |
 | 委任の深さ | Orchestrate は coordinator→track→worker | 通常の対話 CLI で親→子→孫、子での集約を実行確認。非対話では子が先に終了すると孫の結果は親へ直接届く | V1 向けに `[agents] max_depth = 3` を同梱。V2 ではこのキーは無視される |
-| モデル・effort | Cursor のモデル名に effort を含む。役割別モデル・パネルを指定 | `{model, effort}` に分離。3系統×5 effort の native agent 定義を追加 | `{model, reasoning_effort}` に分離 |
-| モデル設定の保存先 | `~/.cursor/rules/pstack-models.mdc` | `~/.claude/rules/pstack-models.md` | `~/.codex/AGENTS.md` の pstack 専用区画 |
+| モデル・effort | Cursor のモデル名に effort を含む。役割別モデル・パネルを指定 | `{model, effort}` に分離。3系統×5 effort の native agent 定義を追加 | 同じ `{model, effort}` を保存 |
+| モデル設定の保存先 | `~/.cursor/rules/pstack-models.mdc` | 対象プロジェクトの `AGENTS.md` の共通区画。`CLAUDE.md` はそこへの相対シンボリックリンク | 同じ共通区画 |
 | 質問 | `AskQuestion` | `AskUserQuestion`。4候補はツール、5〜6候補は番号付きチャット。カテゴリの複数選択条件を維持 | `automate-me` は4〜6候補を番号付きチャットで提示。setup は利用可能な質問ツールまたはチャット |
 | 履歴 | Cursor の transcript 配置・形式 | `~/.claude/projects/`、親子の JSONL、文字列・content block の両形式 | `~/.codex/sessions/` の rollout。session ID、cwd、可視メッセージ・ツール入力を参照 |
 | MCP 発見 | Cursor の `mcps/` 等 | 利用可能ツールと `ToolSearch` | 利用可能ツール・リソースと、公開されている場合のツール検索 |
@@ -24,9 +25,15 @@
 | 作成するスキルの配置 | `.cursor/skills/` 等 | `.claude/skills/` 等。`automate-me` は直接の skill ディレクトリへ配置 | `.agents/skills/`、`~/.codex/skills/` 等 |
 | 外部依存の指示 | 別プラグイン cursor-team-kit の `deslop`、`control-cli`、`control-ui` | 3指示書と MIT ライセンスを内部同梱 | 同左 |
 
-本家 0.15.5 の役割別モデル選択・3人構成のパネル・予算ラベルを保持している。ただし、それらのモデルを Claude Code や Codex からすべて起動できるという意味ではない。setup は同一モデルの利用可能な指定へ解決し、存在しない選択はユーザーに選択を求める。モデル指定が後から拒否された場合の本家 0.15.5 の代替手順も、対応する下位ファイルへ移した。Opus 5 / low と GPT-5.6 Luna / xhigh は検証時の指定であり、配布版の全役割の既定値ではない。
+本家 0.15.5 の役割別モデル選択・3人構成のパネル・予算ラベルを保持している。ただし、それらのモデルを Claude Code や Codex からすべて起動できるという意味ではない。setup は同一モデルの利用可能な指定へ解決し、存在しない選択はユーザーに選択を求める。モデル指定が後から拒否された場合の本家 0.15.5 の代替手順も、対応する下位ファイルへ移した。Opus 5 / low と GPT-5.6 Luna / xhigh は過去の実行検証時の指定であり、配布版の全役割の既定値ではない。
 
 creator の接続先は本家と異なるため、作成処理の実装自体が同一ではない。description 改善や反復を求める指示は本家由来であり、専用の同名コマンドがないことだけを移植の不具合とは扱わない。
+
+## 0.15.5 更新で反映した動作
+
+0.15.2 から 0.15.5 で本家の対象162ファイルのうち45ファイルが変更され、新規・削除はなかった。両環境に配布する本文では、Autopilot の検証を code-ready head と以後の patch 変更ごとに開始し、self-proof・CI・babysit と並行させた。merge 直前の rebase とその head の CI、複数の独立監査 lane、指摘に対する red test または再現記録、子エージェントの `children.tsv` と停滞監査、Shipping の patch-id に基づく lane 結果の再利用条件も反映した。
+
+`setup-pstack` は廃止された役割行を再実行時に落とし、その行をユーザーへ示す。本家 README の「0.15.3以前の rule」は Cursor の旧設定を指し、その行の削除と再実行を案内している。移植版の初期0.15.2も旧既定値をグローバル設定へ保存し得たため、移植版 README に旧 pstack 設定の削除とプロジェクトでの setup 再実行を案内する。setup スキルに旧グローバル設定を操作する手順は加えない。判断記録の `log.sh` は既存ログを上書きしない追記方式へ更新した。クラウド worker と30分タイマーの除外は継続する。
 
 ## ユーザー指定で除外・変更した機能
 
@@ -45,14 +52,14 @@ creator の接続先は本家と異なるため、作成処理の実装自体が
 | 操作 | 現在の状態 |
 | --- | --- |
 | Claude の agent 自身による goal 設定・取得 | 利用できる操作を確認できず、実際の `Skill(goal)` は UI コマンドとして拒否された。Autopilot-full / stack / Multi-phase plan は冒頭に非対応注記があるが、その下には本家の arm/read goal 手順が残る。その部分を実行可能とは説明できない |
-| Codex の watcher 通知による終了済みターンの再開 | 確認した CLI では再現できない。Autonomous run、Babysit、Shipping、Bug fix、Visual parity は冒頭で非対応を明記し、本文には `/loop` を使う指示が残る。実行中に待つ操作とは異なる |
+| Codex の watcher 通知による終了済みターンの再開 | 確認した CLI では再現できない。Autonomous run、Babysit、Shipping は非対応を明記する。Codex 向けの5プレイブックから `/loop` の実行指示を除いた。実行中に待つ操作とは異なる |
 | Claude のイベント監視 | Babysit / Shipping を native の動的 `/loop` と `Monitor` へ翻訳。有限コマンドの出力後に親の応答が再開することは検証済み。実際の PR watcher の長期運用を検証したという意味ではない |
 
 定期タイマーの除外と、イベント通知の上記制約は区別する。これらの非対応操作は独自サービスで補っていない。
 
 ## 比較で確認し、修正した不備
 
-1. **一般名詞 Task の誤置換を修正。** 両版の計画テンプレートを、本家の `## <Task as a verb phrase> (<PR id>)` に戻した。ここはツール名ではなく、作業を動詞句で記す見出しである。[本家](https://github.com/cursor/plugins/blob/e31650eea443aaea1e84cc15d88c13f40080b275/pstack/skills/poteto-mode/playbooks/multi-phase-plan.md#L79)、[Claude](../claude/skills/poteto-mode/playbooks/multi-phase-plan.md)、[Codex](../codex/.agents/skills/poteto-mode/playbooks/multi-phase-plan.md)。
+1. **一般名詞 Task の誤置換を修正。** 両版の計画テンプレートを、本家の `## <Task as a verb phrase> (<PR id>)` に戻した。ここはツール名ではなく、作業を動詞句で記す見出しである。[本家](https://github.com/cursor/plugins/blob/ecc249f1e306fc64ddf83c7bed16cacf7c2239db/pstack/skills/poteto-mode/playbooks/multi-phase-plan.md)、[Claude](../claude/skills/poteto-mode/playbooks/multi-phase-plan.md)、[Codex](../codex/.agents/skills/poteto-mode/playbooks/multi-phase-plan.md)。
 2. **reflect の内部ファイルへの対応漏れを修正。** 使用実績の検出と Routing が、登録された `SKILL.md` と内部の `instructions.md` を扱うよう整合させた。カタログの未発火に対する description 改善は登録スキルに適用する。内部ファイルが選択されなかった場合は、選択を担う呼出元の既存指示を本文修正の対象とする。reviewer・synthesizer・親の適用手順を揃え、登録用 validator に内部ファイルを直接渡す対象指定も修正した。本家の証拠・採否基準と承認手順は維持する。[Claude reviewer](../claude/skills/poteto-mode/internal/reflect/references/judgment-reviewer.md)、[Codex reviewer](../codex/.agents/skills/poteto-mode/internal/reflect/references/judgment-reviewer.md)。
 3. **Claude の make-bot-ui 除外理由のプラットフォーム名を修正。** 誤っていた `Claude Code cloud routines` を、実際の依存先である Cursor cloud routines に直した。クラウド機能を除外する扱いは維持する。[修正ファイル](../claude/skills/poteto-mode/internal/make-bot-ui/instructions.md)。
 
@@ -60,11 +67,11 @@ creator の接続先は本家と異なるため、作成処理の実装自体が
 
 Cursor の組み込み babysit を使わないという文や、worktree cleanup の `.cursor/worktrees`・Cursor cache の例も残る。後者は他アプリの実在する掃除対象にもなり得るため、Cursor という語が残るものを一律に実行不能とは判定しない。
 
-## 本文を変更していない部分と同梱物
+## 同梱物と対象範囲
 
-- 23原則の本文は、登録用 frontmatter と内部リンク化を除き維持している。6原則には参照先ファイル名変更や名前へのリンク追加があり、残り17原則の本文はそのまま。両移植版の原則ファイルは同内容。
+- 23原則はすべて配置している。本家 0.15.5 で変更された原則も反映し、登録用 frontmatter と内部リンクは移植版の配置に合わせている。両移植版の共通部分は同内容。
 - 23プレイブックはすべて存在する。ただし上記の除外・非対応操作を含むため、全プレイブックが本家どおり完走するという意味ではない。
-- 同梱スクリプトの変更は `check-plan.mjs` と `worktree-audit.sh`。後者を各環境の履歴形式に合わせて変更した。Orchestrate と PR watcher の実装・テスト、bootstrap、package / lockfile、decision-log script は本家のファイルを保持している。
+- 同梱スクリプトの移植固有の変更は `check-plan.mjs` と `worktree-audit.sh`。後者を各環境の履歴形式に合わせて変更した。0.15.5 で本家が更新した `check-plan.mjs` と decision-log の `log.sh` も反映している。Orchestrate と PR watcher の実装・テスト、bootstrap、package / lockfile は本家のファイルを保持している。
 - cursor-team-kit の3指示書は、同じ固定コミットにある依存元の本文を変更せず同梱している。
 - 本家の README、`docs/guide/` と画像、ロゴ、`.gitignore` はそのまま同梱していない。移植版の README・翻訳記録を別途作成している。
 - 本家の `automations/benny/` は未同梱。これは Slack 報告の triage と再現・修正を扱う2つの Cursor automation 用セットで、47個の登録スキルとは別である。
@@ -74,7 +81,7 @@ Cursor の組み込み babysit を使わないという文や、worktree cleanup
 
 現在の固定コミット・全ファイル対応・除外理由・移植専用ファイルは [maintenance/upstream.json](../maintenance/upstream.json)、移植差分は [Claude パッチ](../maintenance/patches/claude.patch) と [Codex パッチ](../maintenance/patches/codex.patch) に保存している。Claude manifest の version はパッチから除外し、その他の内容と実行権限を保守ツールで検証する。
 
-本家更新時の三者比較、追加・削除・競合の処理、反映後の検証は [更新手順](updating-upstream.md) に記載する。保守基点のバージョンは 0.15.2 のまま維持し、上記の限定した実行時指示だけを 0.15.5 に合わせた。
+本家更新時の三者比較、追加・削除・競合の処理、反映後の検証は [更新手順](updating-upstream.md) に記載する。保守基点は 0.15.5 である。
 
 ## 過去の監査用の生差分
 

@@ -22,24 +22,22 @@ Open a todolist with one entry per phase before launching anything.
 1. State the done predicate and the artifact or report the swarm must return.
 2. Choose the shape. Partition into slices, race N workers on identical briefs, or mix both. For a race or mixed shape, declare `first pass`, `rank all`, or `best-of` before spawning.
 3. Set N from the user or derive it from the shape. N is total workers, not the local concurrency limit.
-4. Pick the worker model from the `swarm workers` line in the pstack model configuration section of `~/.codex/AGENTS.md`. If the section or that line is missing, use `grok-4.7-xhigh-fast`. For `auto` or `inherit-parent`, use the parent model and effort. If `spawn_agent` rejects a configured model, use the default and say so. If it rejects the default, use the closest valid model ID of the same family from its error message; if none exists, ask for a model choice. For a model race, name each arm's model up front.
-5. Give each worker its own writable output when it writes.
+4. Pick the worker model from the `swarm workers` line in the pstack model configuration section of the project-root `AGENTS.md`. If the section or that line is missing, use `grok-4.7-xhigh-fast`. For `auto` or `inherit-parent`, use the parent model and effort. If the configured model is unavailable, use the default and say so. If the default is unavailable, use the closest valid model ID of the same family from the available models; if none exists, ask for a model choice. For a model race, name each arm's model up front.
+5. Give each worker its own writable output when it writes. When workers verify or measure commits, each brief names the exact SHAs. A measurement brief also names the method (sample count, what one sample is, order). The worker records both in its result.
 
 ## Phase B: Fan out
 
-Launch all N workers in one message with asynchronous ordinary `spawn_agent`
-calls, without the poteto-agent body, passing the configured `model` and
-`reasoning_effort`. Give each code-writing worker its own local worktree.
+Start all N workers as parallel subagents without the poteto-agent body, using each role's configured model and effort. Give each code-writing worker its own local worktree.
 When a worker must start from a specified branch, use a checkout of that branch
 and include its local path in the brief.
 
-Every brief stands alone. Include the goal, scope, exact slice or race arm, how to verify, and what to report. Reports use `PASS`, `ISSUES`, or `BLOCKED` with evidence.
+Every brief stands alone. Include the goal, scope, exact slice or race arm, how to verify, and what to report. Reports use `PASS`, `ISSUES`, or `BLOCKED` with evidence. A worker that can prove a defect reports `ISSUES` and lists every issue it can prove, not only the first.
 
 If a worker drops out, proceed with N-1 and note it.
 
 ## Phase C: Aggregate
 
-Read every local `spawn_agent` result. For coverage, every required slice needs a result. For a
+Read every worker result. Drop a result that does not record the SHAs and method its brief names, and rerun that worker once. After a second miss, record a gap. A gap does not count as a pass. For coverage, every required slice needs a result. For a
 race, apply the selection rule declared up front. Use first pass, rank all, or
 best-of. Do not paste raw worker dumps.
 

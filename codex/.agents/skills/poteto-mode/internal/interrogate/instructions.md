@@ -32,7 +32,7 @@ Write one clear paragraph. If you're unsure about the intent, ask the user befor
 
 ## Step 3, Spawn Reviewers
 
-Launch all reviewers in a single message using the `spawn_agent` tool. Use the `interrogate reviewers` line in the pstack model configuration section of `~/.codex/AGENTS.md`, one reviewer per entry, extending or shrinking the Reviewer A/B/C labels below to the configured entry count. If the section or that line is missing, use the table defaults.
+Launch all reviewers in parallel. Use the `interrogate reviewers` line in the pstack model configuration section of the project-root `AGENTS.md`, one reviewer per entry, extending or shrinking the Reviewer A/B/C labels below to the configured entry count. If the section or that line is missing, use the table defaults.
 
 | Subagent | Default model |
 |----------|---------------|
@@ -41,10 +41,10 @@ Launch all reviewers in a single message using the `spawn_agent` tool. Use the `
 | Reviewer C | `grok-4.7-xhigh-fast` |
 
 For each reviewer:
-- Tool: `spawn_agent` without the poteto-agent body
-- `model`: the model ID from the configured `interrogate reviewers` entry, with its `reasoning_effort` passed separately. With no configured line, retain the table's model and effort choice. For an `auto` or `inherit-parent` entry, use the parent model and effort
+- Use a subagent without the poteto-agent body
+- Model: the model ID from the configured `interrogate reviewers` entry, with its configured effort. With no configured line, retain the table's model and effort choice. For an `auto` or `inherit-parent` entry, use the parent model and effort
 
-If `spawn_agent` rejects a configured entry, run that reviewer on the table default of its family and say so. Families go by prefix: `claude-*`, `gpt-*`, and `grok-*`. With no family match, use Reviewer A's default. If it rejects a table default, check the valid model IDs in the tool's error message and pick the closest equivalent of the same family. If none exists, ask for a model choice. Open a separate PR to update a rejected default table. Do not block the review on a resolvable model issue. Never treat an alias entry as a rejected model or apply either fallback to it.
+If a configured model is unavailable, run that reviewer on the table default of its family and say so. Families go by prefix: `claude-*`, `gpt-*`, and `grok-*`. With no family match, use Reviewer A's default. If the table default is unavailable, check the valid model IDs in the environment and pick the closest equivalent of the same family. If none exists, ask for a model choice. Open a separate PR to update a rejected default table. Do not block the review on a resolvable model issue. Never treat an alias entry as a rejected model or apply either fallback to it.
 
 Read `references/reviewer-prompt.md` and fill in the template with:
 1. The stated intent

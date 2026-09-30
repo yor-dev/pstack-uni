@@ -7,7 +7,7 @@ description: "Use for \"how does X work\", code walkthroughs before changing som
 
 Explore the codebase to answer "how does X work?" questions. Produce architectural explanations at the level of a senior engineer onboarding onto a subsystem, enough to build a working mental model, not so much that it reads like annotated source code.
 
-Each spawn below names a role line in `~/.claude/rules/pstack-models.md` and a default. Set `model` to that line's value, or to the default if the rule or line is missing. For `auto` or `inherit-parent`, use the unsuffixed `general-purpose` subagent type and omit `model`. If the Agent tool rejects a slug, use the default and say so. If it rejects the default, use the closest valid slug of the same family from its error message.
+Each subagent role below names a line in the pstack model configuration section of the project-root `AGENTS.md` and a default. Use that line's `{model, effort}`, or the default if the line is missing. `auto` and `inherit-parent` mean the parent model and effort. If a configured model is unavailable, use the role's default and say so. If that default is also unavailable, use the closest available model in the same family. If none exists, ask the user to choose an available model.
 
 ## Step 1. Assess Complexity
 
@@ -20,28 +20,19 @@ When in doubt, take the simple path.
 
 ## Step 2a. Explore (complex questions only)
 
-Decompose the question into 2 to 4 exploration angles, each a distinct slice of the subsystem. Spawn all explorers in a single message:
-
-- `subagent_type`: `pstack:general-purpose-<effort>`
-- `model`: the `how explorer` line, default `grok-4.7-xhigh-fast`
+Decompose the question into 2 to 4 exploration angles, each a distinct slice of the subsystem. Spawn all explorers concurrently using the `how explorer` role line, default `grok-4.7-xhigh-fast`.
 
 Each explorer gets the prompt in `references/explorer-prompt.md` with its angle filled in. Then go to Step 3.
 
 ## Step 2b. Direct Explain (simple questions)
 
-Spawn one Agent subagent that explores and explains in one pass:
-
-- `subagent_type`: `pstack:general-purpose-<effort>`
-- `model`: the `how explainer` line, default `claude-opus-5-5-max`
+Spawn one subagent that explores and explains in one pass using the `how explainer` role line, default `claude-opus-5-5-max`.
 
 Build its prompt from `references/explainer-prompt.md` without the explorer-findings section. Go to Step 4.
 
 ## Step 3. Synthesize (complex questions only)
 
-Once all explorers have returned, spawn one Agent subagent to synthesize their findings into one explanation:
-
-- `subagent_type`: `pstack:general-purpose-<effort>`
-- `model`: the `how explainer` line, default `claude-opus-5-5-max`
+Once all explorers have returned, spawn one subagent to synthesize their findings using the `how explainer` role line, default `claude-opus-5-5-max`.
 
 Build its prompt from `references/explainer-prompt.md` with every explorer's findings filled in.
 

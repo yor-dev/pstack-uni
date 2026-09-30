@@ -1,6 +1,6 @@
 # pstack-uni
 
-[poteto の pstack](https://github.com/cursor/plugins/tree/e31650eea443aaea1e84cc15d88c13f40080b275/pstack) の Claude Code・Codex 向け移植版です。保守上の基点は pstack 0.15.2 です。本体・`setup-pstack` と役割別モデル設定の参照先には [本家 0.15.5](https://github.com/cursor/plugins/tree/ecc249f1e306fc64ddf83c7bed16cacf7c2239db/pstack) の変更を先行反映しています。実行環境の制約、ユーザー指定の除外範囲、実際に検証した範囲は以下に記載しています。
+[poteto の pstack 0.15.5](https://github.com/cursor/plugins/tree/ecc249f1e306fc64ddf83c7bed16cacf7c2239db/pstack) の Claude Code・Codex 向け移植版です。保守上の基点は `ecc249f1e306fc64ddf83c7bed16cacf7c2239db` です。実行環境の制約、ユーザー指定の除外範囲、実際に検証した範囲は以下に記載しています。
 
 ユーザー指定により、エージェントの実行環境はローカルに限定します。本家のクラウド worker は各環境のローカル子エージェントへ対応づけます。クラウド専用の routine と、ローカルを含む定期タイマーによるターン終了後の再開は移植対象外です。
 
@@ -42,6 +42,10 @@ npx skills add https://github.com/yor-dev/pstack-uni/tree/main/codex/.agents/ski
 
 プロジェクトの `.agents/skills/poteto-mode/` と `.agents/skills/setup-pstack/` へ導入されます。clone 済みなら URL の代わりに、それぞれのローカルディレクトリを指定できます。その他の45スキル・エージェント本文・参照資料・スクリプトは `poteto-mode` に同梱します。`poteto-mode` の自動起動は無効です。導入後に Codex を起動し、作業には `$poteto-mode 調査したいことや実装したいこと`、モデル設定には `$setup-pstack` を使います。
 
+両版の `setup-pstack` は対象プロジェクト直下の `AGENTS.md` に共通の役割別モデル設定区画を書きます。同じ場所の `CLAUDE.md` は `AGENTS.md` を指す相対シンボリックリンクにします。設定値は `{model, effort}` です。保存したモデル指定をもう一方の環境が受け付けない場合は、その環境でモデルを選び直す必要があります。
+
+旧版が保存した役割行は、0.15.2当時の既定モデルを固定している場合があります。0.15.5の既定値を使うには、旧 `~/.claude/rules/pstack-models.md` の pstack 役割行を削除し（pstack 専用ならファイルごと削除可）、旧 `~/.codex/AGENTS.md` では pstack 区画だけを削除して、対象プロジェクトで `setup-pstack` を再実行します。両方ある場合は両方を整理し、他の指示は残してください。旧設定で個別に選んだモデルを使い続ける場合は、再実行時に選び直します。
+
 CLI V1 では、本家の深さ3の委任に合わせて `.codex/config.toml` の `[agents]` に `max_depth = 3` を設定します。同梱の `codex/.codex/config.toml` はこの設定だけを持ちます。既存設定がある場合は、このキーを統合してください。V2 ではこのキーは無視されます。
 
 `npx skills add` は `.codex/config.toml` を設定しないため、CLI V1 では次の値を別途統合します。
@@ -60,9 +64,9 @@ GPT-5.6 Luna / xhigh で、入口から Investigation・how・説明担当への
 | 操作 | Claude Code | Codex |
 | --- | --- | --- |
 | 明示起動、内部ファイル読込、ローカル委任 | 実行確認済み | 実行確認済み |
-| `setup-pstack` の独立登録・起動 | プラグイン検証済み。対話実行は未検証 | 一時導入と予算表示を確認。設定保存は未検証 |
+| `setup-pstack` の独立登録・起動 | プラグイン検証済み。新しいプロジェクト保存先とリンク作成は未検証 | 一時導入と予算表示を確認。新しいプロジェクト保存先とリンク作成は未検証 |
 | native creator を使うスキル作成 | 成果物の作成・利用を実行確認 | 成果物の作成・動作を実行確認 |
-| 履歴、設定保存、コメント編集 | 形式を翻訳。保存・編集を実行確認 | 形式を翻訳。保存・編集を実行確認 |
+| 履歴、設定保存、コメント編集 | 形式を翻訳。一時ファイルへの保存とコメント編集を実行確認 | 形式を翻訳。一時ファイルへの保存とコメント編集を実行確認 |
 | goal の作成・取得 | ユーザーの `/goal` は存在。agent の `Skill(goal)` は UI コマンドとして拒否されることを実測。取得ツールも未発見 | native goal ツールで実行確認済み |
 | watcher 出力での再開 | `Monitor` で実行確認済み | ターン終了後の再開は未対応 |
 | 定期タイマーによるターン終了後の再開 | ユーザー指定で対象外 | ユーザー指定で対象外 |
@@ -73,10 +77,12 @@ Claude の agent 自身による goal 操作と、Codex の watcher 通知によ
 
 Opus 5 / low と GPT-5.6 Luna / xhigh は検証時だけの指定です。両版の役割別モデル選択は本家 0.15.5 に合わせています。常用環境へのインストールやユーザー設定の保存は行っていません。
 
-全ファイルの比較基点は pstack 0.15.2、コミット `e31650eea443aaea1e84cc15d88c13f40080b275` のままです。0.15.5 全体を移植したものではありません。移植したファイルのライセンスは [MIT](claude/LICENSE) です。
+全ファイルの比較基点は pstack 0.15.5 です。Autopilot の code-ready head と各 patch 変更後の検証ラウンドを含む本家の更新を反映しています。移植したファイルのライセンスは [MIT](claude/LICENSE) です。
 
 ## 本家の更新への対応
 
+[shared/skills](shared/skills) を両版のスキル本文の共通原本とします。環境固有の記述は `{{#claude}}...{{/claude}}` と `{{#codex}}...{{/codex}}` に分け、片方にしかないファイルと Claude のエージェント定義テンプレートは [shared/clients](shared/clients) に置きます。`python3 tools/generate.py` で `claude/`・`codex/` の配布ファイルと Claude の effort 別エージェント定義17件を生成します。`python3 tools/generate.py --check` は生成結果と配布ファイルの一致を確認します。
+
 [固定元と全ファイルの対応表](maintenance/upstream.json)、[Claude の移植パッチ](maintenance/patches/claude.patch)、[Codex の移植パッチ](maintenance/patches/codex.patch) を保存しています。配布バージョンは [plugin.json](claude/.claude-plugin/plugin.json) のみで管理します。[差分の意味](docs/upstream-differences.md) と [更新手順・検証方法](docs/updating-upstream.md) を合わせて参照してください。
 
-`tools/upstream.py` は、保存パッチからの復元検証と、新旧本家・現行移植版の三者比較を行います。新規・削除・競合を報告し、更新候補を別ディレクトリへ出力します。配布版への反映は翻訳内容をレビューして行います。
+`tools/upstream.py` の `refresh`・`check`・`compare` は生成結果の一致を事前に確認し、保存パッチからの復元検証と、新旧本家・現行移植版の三者比較を行います。新規・削除・競合を報告し、更新候補を別ディレクトリへ出力します。配布版への反映は翻訳内容をレビューして共通原本を更新します。

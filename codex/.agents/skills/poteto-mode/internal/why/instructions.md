@@ -9,7 +9,7 @@ Investigate the motivation and intent behind code.
 
 Companion to the `how` skill. `how` answers what the code does and how it works. `why` answers what forces led to its shape.
 
-Each spawn below names a role line in the pstack model configuration section of `~/.codex/AGENTS.md` and a default. Use the line's model and effort, or the default if the section or line is missing. For `auto` or `inherit-parent`, use the parent model and effort. If `spawn_agent` rejects a configured model, use the default and say so. If it rejects the default, use the closest valid model ID of the same family from its error message; if none exists, ask for a model choice.
+Each delegated role below names a role line in the pstack model configuration section of the project-root `AGENTS.md` and a default. Use the line's model and effort, or the default if the section or line is missing. For `auto` or `inherit-parent`, use the parent model and effort. If the configured model is unavailable, use the default and say so. If the default is unavailable, use the closest valid model ID of the same family from the available models; if none exists, ask for a model choice.
 
 ## Operating Posture
 
@@ -76,11 +76,11 @@ Source control is always available through git and `gh`. For the other six, clas
 
 Aim for a complete **coverage map**, not a minimal one. Document the null, don't skip the search.
 
-Launch all matching investigators in a single message so they run concurrently. Don't ask one agent to cover multiple MCPs.
+Start all matching investigators in parallel so they run concurrently. Don't ask one agent to cover multiple MCPs.
 
 Subagent config (each):
-- Tool: `spawn_agent` without the poteto-agent body
-- `model` and `reasoning_effort`: the `why investigators` line, default `grok-4.7-xhigh-fast`
+- Use a subagent without the poteto-agent body
+- Model and effort: the `why investigators` line, default `grok-4.7-xhigh-fast`
 - Investigators still shouldn't write anything.
 
 Each investigator gets:
@@ -121,10 +121,10 @@ If your scope assessment suggests a single-commit trivial target where the PR de
 
 ## Step 4. Synthesize
 
-Spawn one synthesizer subagent:
+Start one synthesizer subagent:
 
-- Tool: `spawn_agent` without the poteto-agent body
-- `model` and `reasoning_effort`: the `why synthesizer` line, default `claude-opus-5-5-max`
+- Use a subagent without the poteto-agent body
+- Model and effort: the `why synthesizer` line, default `claude-opus-5-5-max`
 - The synthesizer's quality check spot-verifies citations, which can require MCP access.
 
 The synthesizer gets:

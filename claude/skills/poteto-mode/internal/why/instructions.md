@@ -9,7 +9,7 @@ Investigate the motivation and intent behind code.
 
 Companion to the `how` skill. `how` answers what the code does and how it works. `why` answers what forces led to its shape.
 
-Each spawn below names a role line in `~/.claude/rules/pstack-models.md` and a default. Set `model` to that line's value, or to the default if the rule or line is missing. For `auto` or `inherit-parent`, use the unsuffixed `general-purpose` subagent type and omit `model`. If the Agent tool rejects a slug, use the default and say so. If it rejects the default, use the closest valid slug of the same family from its error message.
+Each subagent role below names a line in the pstack model configuration section of the project-root `AGENTS.md` and a default. Use that line's `{model, effort}`, or the default if the line is missing. `auto` and `inherit-parent` mean the parent model and effort. If a configured model is unavailable, use the role's default and say so. If that default is also unavailable, use the closest available model in the same family. If none exists, ask the user to choose an available model.
 
 ## Operating Posture
 
@@ -78,10 +78,7 @@ Aim for a complete **coverage map**, not a minimal one. Document the null, don't
 
 Launch all matching investigators in a single message so they run concurrently. Don't ask one agent to cover multiple MCPs.
 
-Subagent config (each):
-- `subagent_type`: `pstack:general-purpose-<effort>`
-- `model`: the `why investigators` line, default `grok-4.7-xhigh-fast`
-- Investigators still shouldn't write anything.
+Use the `why investigators` role line, default `grok-4.7-xhigh-fast`. Investigators still shouldn't write anything.
 
 Each investigator gets:
 1. The base prompt from `references/investigator-prompt.md`
@@ -121,11 +118,7 @@ If your scope assessment suggests a single-commit trivial target where the PR de
 
 ## Step 4. Synthesize
 
-Spawn one synthesizer subagent:
-
-- `subagent_type`: `pstack:general-purpose-<effort>`
-- `model`: the `why synthesizer` line, default `claude-opus-5-5-max`
-- The synthesizer's quality check spot-verifies citations, which can require MCP access.
+Spawn one synthesizer subagent using the `why synthesizer` role line, default `claude-opus-5-5-max`. Its quality check spot-verifies citations, which can require MCP access.
 
 The synthesizer gets:
 1. The investigator findings, including any null results and any categories skipped with justification

@@ -1,6 +1,6 @@
 # Claude Code への翻訳
 
-対象は本家 pstack v0.15.2、`cursor/plugins@e31650eea443aaea1e84cc15d88c13f40080b275`。2026-09-27 更新。原文は [poteto-mode][upstream-mode]、[how][upstream-how]、[poteto-agent][upstream-agent]、[調査プレイブック][upstream-investigation]。移植の実装作業は完了。以下に実行環境の制約と、実施した試験・未検証の範囲を記録する。
+対象は本家 pstack v0.15.5、`cursor/plugins@ecc249f1e306fc64ddf83c7bed16cacf7c2239db`。2026-09-28 更新。原文は [poteto-mode][upstream-mode]、[how][upstream-how]、[poteto-agent][upstream-agent]、[調査プレイブック][upstream-investigation]。以下の実行記録は、それぞれの実施時点の移植版を検証した結果であり、0.15.5 更新後の全手順の実行試験を意味しない。実行環境の制約と未検証の範囲も記録する。
 
 本家が指定する条件・手順・委譲・段階的な読み込みを維持し、Cursor 固有の表現を Claude Code の対応機能へ翻訳する。以下は開発者向けの翻訳記録であり、実行時にモデルへ渡す追加指示ではない。
 
@@ -157,7 +157,7 @@ poteto-agent の子は入口ファイルを読まず、対象コードだけを�
 | プレイブック手順を原文で todolist に記録 | `TaskCreate` / `TaskUpdate` で記録 | タスク一覧の対応機能。[ツール一覧][tools]。本家本文は特定のタスクツール名を指定していないため、本文への説明追加は不要。試験環境でタスクツールを有効にする。 |
 | 原則索引、適用する原則の全文読込、読んだ原則のみ引用 | 原文を維持 | 既に本家にある指示。新しい読込用の指示は不要。 |
 | `investigation.md` の下位スキル呼び出し | 内部ファイルを Read して指示を適用する表現 | 調査の順序と適用条件は維持。探索・説明テンプレートと、how の複雑度分岐・委任条件も維持。 |
-| `~/.cursor/rules/pstack-models.mdc` と `alwaysApply: true` | `~/.claude/rules/pstack-models.md` と `paths` を持たないルール | [ユーザー共通ルール][user-rules]の保存先と、常時読込形式への翻訳。setup と arena / interrogate / swarm の参照先を更新。実際のユーザー設定ファイルは作成していない。役割別のモデル・予算変換の完成を意味しない。 |
+| `~/.cursor/rules/pstack-models.mdc` と `alwaysApply: true` | 対象プロジェクト直下の `AGENTS.md` の共通区画。`CLAUDE.md` は `AGENTS.md` への相対シンボリックリンク | [プロジェクトの CLAUDE.md](https://code.claude.com/docs/en/memory#share-one-file-with-other-coding-tools) への翻訳。setup と arena / interrogate / swarm の参照先を更新。既存の他の指示を保持する。新しい保存先とリンク作成は未検証。 |
 | why の MCP 発見に使う Cursor の `mcps/` ディレクトリ | Claude の利用可能ツール一覧と、遅延ツールの定義取得に使う `ToolSearch` | [MCP ツール検索][mcp-discovery]への翻訳。証拠カテゴリの分類・網羅条件・調査担当の人数は変更しない。実サービスの MCP を使った why 全体の実行は未検証。 |
 | 検証スキルの生成・保守先 `.cursor/skills/verify-*/` | `.claude/skills/verify-*/` | [プロジェクトスキルの保存先][skill-locations]への翻訳。create-verification-skill と maintain-verification-skill の参照を更新。 |
 
@@ -272,14 +272,13 @@ Cursor の実行環境はない。本家のファイルから確認した要求�
 [agent-fields]: https://code.claude.com/docs/en/sub-agents#supported-frontmatter-fields
 [background]: https://code.claude.com/docs/en/sub-agents#run-subagents-in-foreground-or-background
 [fork-mode]: https://code.claude.com/docs/en/sub-agents#turn-fork-mode-on-or-off
-[user-rules]: https://code.claude.com/docs/en/memory#user-level-rules
 [effort-resolution]: https://code.claude.com/docs/en/model-config#set-the-effort-level
 [agent-model]: https://code.claude.com/docs/en/sub-agents#choose-a-model
 [main-agent]: https://code.claude.com/docs/en/sub-agents#invoke-subagents-explicitly
 [skill-lifecycle]: https://code.claude.com/docs/en/skills#skill-content-lifecycle
 [skill-locations]: https://code.claude.com/docs/en/skills#choose-where-skills-load
 [mcp-discovery]: https://code.claude.com/docs/en/mcp#scale-with-mcp-tool-search
-[upstream-mode]: https://github.com/cursor/plugins/blob/e31650eea443aaea1e84cc15d88c13f40080b275/pstack/skills/poteto-mode/SKILL.md
-[upstream-how]: https://github.com/cursor/plugins/blob/e31650eea443aaea1e84cc15d88c13f40080b275/pstack/skills/how/SKILL.md
-[upstream-agent]: https://github.com/cursor/plugins/blob/e31650eea443aaea1e84cc15d88c13f40080b275/pstack/agents/poteto-agent.md
-[upstream-investigation]: https://github.com/cursor/plugins/blob/e31650eea443aaea1e84cc15d88c13f40080b275/pstack/skills/poteto-mode/playbooks/investigation.md
+[upstream-mode]: https://github.com/cursor/plugins/blob/ecc249f1e306fc64ddf83c7bed16cacf7c2239db/pstack/skills/poteto-mode/SKILL.md
+[upstream-how]: https://github.com/cursor/plugins/blob/ecc249f1e306fc64ddf83c7bed16cacf7c2239db/pstack/skills/how/SKILL.md
+[upstream-agent]: https://github.com/cursor/plugins/blob/ecc249f1e306fc64ddf83c7bed16cacf7c2239db/pstack/agents/poteto-agent.md
+[upstream-investigation]: https://github.com/cursor/plugins/blob/ecc249f1e306fc64ddf83c7bed16cacf7c2239db/pstack/skills/poteto-mode/playbooks/investigation.md

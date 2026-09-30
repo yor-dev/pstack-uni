@@ -7,7 +7,7 @@ description: "Use for \"how does X work\", code walkthroughs before changing som
 
 Explore the codebase to answer "how does X work?" questions. Produce architectural explanations at the level of a senior engineer onboarding onto a subsystem, enough to build a working mental model, not so much that it reads like annotated source code.
 
-Each spawn below names a role line in the pstack model configuration section of `~/.codex/AGENTS.md` and a default. Use the line's model and effort, or the default if the section or line is missing. For `auto` or `inherit-parent`, use the parent model and effort. If `spawn_agent` rejects a configured model, use the default and say so. If it rejects the default, use the closest valid model ID of the same family from its error message; if none exists, ask for a model choice.
+Each delegated role below names a role line in the pstack model configuration section of the project-root `AGENTS.md` and a default. Use the line's model and effort, or the default if the section or line is missing. For `auto` or `inherit-parent`, use the parent model and effort. If the configured model is unavailable, use the default and say so. If the default is unavailable, use the closest valid model ID of the same family from the available models; if none exists, ask for a model choice.
 
 ## Step 1. Assess Complexity
 
@@ -20,28 +20,28 @@ When in doubt, take the simple path.
 
 ## Step 2a. Explore (complex questions only)
 
-Decompose the question into 2 to 4 exploration angles, each a distinct slice of the subsystem. Spawn all explorers in a single message:
+Decompose the question into 2 to 4 exploration angles, each a distinct slice of the subsystem. Start all explorers in parallel:
 
-- Tool: `spawn_agent` without the poteto-agent body
-- `model` and `reasoning_effort`: the `how explorer` line, default `grok-4.7-xhigh-fast`
+- Use a subagent without the poteto-agent body
+- Model and effort: the `how explorer` line, default `grok-4.7-xhigh-fast`
 
 Each explorer gets the prompt in `references/explorer-prompt.md` with its angle filled in. Then go to Step 3.
 
 ## Step 2b. Direct Explain (simple questions)
 
-Spawn one subagent with `spawn_agent` that explores and explains in one pass:
+Start one subagent that explores and explains in one pass:
 
-- Tool: `spawn_agent` without the poteto-agent body
-- `model` and `reasoning_effort`: the `how explainer` line, default `claude-opus-5-5-max`
+- Use a subagent without the poteto-agent body
+- Model and effort: the `how explainer` line, default `claude-opus-5-5-max`
 
 Build its prompt from `references/explainer-prompt.md` without the explorer-findings section. Go to Step 4.
 
 ## Step 3. Synthesize (complex questions only)
 
-Once all explorers have returned, spawn one subagent with `spawn_agent` to synthesize their findings into one explanation:
+Once all explorers have returned, start one subagent to synthesize their findings into one explanation:
 
-- Tool: `spawn_agent` without the poteto-agent body
-- `model` and `reasoning_effort`: the `how explainer` line, default `claude-opus-5-5-max`
+- Use a subagent without the poteto-agent body
+- Model and effort: the `how explainer` line, default `claude-opus-5-5-max`
 
 Build its prompt from `references/explainer-prompt.md` with every explorer's findings filled in.
 

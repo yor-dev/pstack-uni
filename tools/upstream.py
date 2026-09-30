@@ -1,6 +1,7 @@
 import argparse
 import json
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
@@ -9,6 +10,16 @@ ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "maintenance/upstream.json"
 PLATFORMS = ("claude", "codex")
 CLAUDE_PLUGIN = "claude/.claude-plugin/plugin.json"
+
+
+def check_generated():
+    result = subprocess.run(
+        [sys.executable, str(ROOT / "tools/generate.py"), "--check"],
+        capture_output=True, text=True,
+    )
+    if result.returncode:
+        raise ValueError(result.stderr.strip() or result.stdout.strip()
+                         or "Generated distribution files are stale")
 
 
 def git(repo, *args, data=None, allowed=(0,)):
@@ -231,6 +242,7 @@ def main():
         raise ValueError("Manifest must pin the full commit ID")
     current = disk_tree(ROOT)
     validate(manifest, source, current)
+    check_generated()
     if args.command == "refresh":
         patches = {platform: patch_for(base_tree(manifest, source, platform), {
             p: v for p, v in current.items() if p.startswith(platform + "/")

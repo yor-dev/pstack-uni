@@ -1,6 +1,6 @@
 # Codex への翻訳
 
-本家 pstack v0.15.2、`cursor/plugins@e31650eea443aaea1e84cc15d88c13f40080b275` を基準とする。2026-09-27 更新。移植の実装作業は完了。入口・委任・設定保存・コメント編集などを実行検証した。以下に実行環境の制約と、実施した試験・未検証の範囲を記録する。
+本家 pstack v0.15.5、`cursor/plugins@ecc249f1e306fc64ddf83c7bed16cacf7c2239db` を基準とする。2026-09-28 更新。以下の実行記録は、それぞれの実施時点の移植版で入口・委任・設定保存・コメント編集などを検証した結果であり、0.15.5 更新後の全手順の実行試験を意味しない。実行環境の制約と未検証の範囲も記録する。
 
 ユーザー指定により、クラウドは使用しない。本家のクラウド worker はローカルの `spawn_agent` に対応づける。担当の人数・役割・モデル選択・結果集約は維持する。クラウド専用の定期起動、routine、クラウドセッションの継続・回収は対象外とし、未完了の開発項目には数えない。
 
@@ -48,7 +48,7 @@ codex/
 
 公式ドキュメントには `.codex/agents/*.toml` のカスタムエージェントがある。[公式仕様](https://developers.openai.com/ja-JP/docs/agent-configuration/subagents)。一方、実機の Codex CLI 0.155.0 では `spawn_agent` に `agent_type` が公開されていなかった。TOML を置いた試験でも、その定義を選んで子へ渡すことは確認できなかった。製品に動かない種別名を指定せず、既存のエージェント本文を依頼に渡す操作へ翻訳した。新しい行動規範、実行ラッパー、起動フックは作成していない。
 
-実行時 API の質問結果は `tmp/experiments/codex-translation/runtime/schema.jsonl`。CLI の V1 ツールは `message`、`items`、`model`、`reasoning_effort`、`fork_context` を示した。アプリの V2 では `fork_turns` などに違いがある。本文は独立した子コンテキストを V1 の `fork_context: false`、V2 の `fork_turns: "none"` に対応づける。製品の実行試験は V1 で行った。
+実行時 API の質問結果は `tmp/experiments/codex-translation/runtime/schema.jsonl`。CLI の V1 ツールは `message`、`items`、`model`、`reasoning_effort`、`fork_context` を示した。アプリの V2 では `fork_turns` などに違いがある。製品の実行試験は V1 で行った。現在のスキル本文は独立した子コンテキストを求め、具体的な引数名は指定しない。
 
 本家の orchestrate が示す深さ3の委任に対し、CLI V1 は `[agents] max_depth = 3` を使う。[公式設定 schema](https://developers.openai.com/codex/config-schema.json) にあるネイティブ設定で、V2 では無視される。モデルや権限制限はこのファイルに設定しない。試験ではプロジェクト設定の自動読込と切り離して `-c agents.max_depth=3` を渡し、同じ値での実行を確認する。
 
@@ -56,7 +56,7 @@ codex/
 
 本家の Grok・GPT・Claude の役割表、パネル人数、予算ラベルを保持する。検証時だけ親子を GPT-5.6 Luna / xhigh に指定する。利用できない本家モデルをすべて Luna に置換する設定は作らない。
 
-setup は、本家モデルの選択を利用可能な同じモデルの ID と reasoning effort に対応づける。`unlimited` は各役割の effort を維持する。保存する値は `{"model": "...", "reasoning_effort": "..."}`、親を使う指定は元の二つの別名のままとする。常時適用ルールは `~/.codex/AGENTS.md` 内の pstack 専用区画へ翻訳し、既存の他の指示は保持する。実際のユーザー設定には書き込んでいない。setup の対話全体は未検証。
+setup は、本家モデルの選択を利用可能な同じモデルの ID と effort に対応づける。`unlimited` は各役割の effort を維持する。保存する値は共通形式の `{"model": "...", "effort": "..."}` とし、親を使う指定は元の二つの別名のままとする。設定は対象プロジェクト直下の `AGENTS.md` の共通区画へ保存し、他の指示を保持する。同じ場所の `CLAUDE.md` は `AGENTS.md` への相対シンボリックリンクにする。新しい保存先とリンク作成を含む setup の対話全体は未検証。
 
 2026-09-27 に一時ディレクトリへ2スキルを導入し、Codex CLI の読み取り専用実行で `$setup-pstack` が4つの予算選択肢を返すことを確認した。設定ファイルへの保存は試験していない。
 
@@ -130,7 +130,7 @@ worktree 監査では、一致する記録の後に無関係な行があって�
 
 初回試験後、how/why のモデル指定欄で `model` と `reasoning_effort` の両方を明記し、how のテンプレート内の Read/Grep/Glob というツール名をシェルでの読込・検索・列挙へ翻訳した。これらを手順省略の修正とは扱わない。
 
-`explicit` の実 spawn 引数は `fork_context: true` だった。初稿の「独立した子コンテキスト」という指定と異なり、親の履歴も継承している。監査では子固有の `turn_id` と実行開始位置で親の履歴を除外し、子自身も入口・Investigation・how・unslop・テンプレートを新たに読んだことを確認した。初回試験後、独立したコンテキストに対応する native fork 引数を本文に明記した。
+`explicit` の実 spawn 引数は `fork_context: true` だった。初稿の「独立した子コンテキスト」という指定と異なり、親の履歴も継承している。監査では子固有の `turn_id` と実行開始位置で親の履歴を除外し、子自身も入口・Investigation・how・unslop・テンプレートを新たに読んだことを確認した。初回試験後は native fork 引数を本文に明記したが、現在は引数名を外し、独立した子コンテキストという要件だけを残す。
 
 `agent-body` の実 spawn は `fork_context: false`、`model: gpt-5.6-luna`、`reasoning_effort: xhigh`。親が渡した定義の本文と、子が受け取った本文を確認した。子は入口138行を実際に読んだ。一方、how を読んだ後の説明担当の起動は省略しており、本文の受け渡しの成功をワークフロー全体の成功には扱わない。親子のモデル・effort は子の自己申告ではなく、保存済み `turn_context` でも確認する。
 
