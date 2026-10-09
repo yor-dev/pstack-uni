@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 ## Important notes
 
-When calling Claude from Codex, use `claude exec` (Claude Code) as a subagent. Never set a timeout or thinking cap. Do not impose any limit that has not been explicitly requested.
+When calling Claude from Codex, use `claude -p` (Claude Code) as a subagent. Never set a timeout or thinking cap. Do not impose any limit that has not been explicitly requested.
 
 The same requirements apply when calling Codex from Claude.
 

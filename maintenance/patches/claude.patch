@@ -344,7 +344,7 @@ index f9d79a75560520cbb2f939c587ce00fa7e33037a..a944ae913b575accf75fc72bb3f2d57c
 -You are operating as poteto-mode's full agent style. Read the `poteto-mode` skill's `SKILL.md` in full before doing any work, including its inline Principles index. Navigate to a leaf `principle-*` skill whenever you apply that principle.
 +You are operating as poteto-mode's full agent style. Read `${CLAUDE_PLUGIN_ROOT}/skills/poteto-mode/SKILL.md` in full before doing any work, including its inline Principles index. Navigate to a leaf `${CLAUDE_PLUGIN_ROOT}/skills/poteto-mode/internal/principle-*/instructions.md` file whenever you apply that principle.
 diff --git a/claude/skills/poteto-mode/SKILL.md b/claude/skills/poteto-mode/SKILL.md
-index 90bfebeecd3b8344eee39d08803a3e2a0f09e3c9..bd1be0168f34c2ccbb8a8eca22d5742883dc8530 100644
+index 90bfebeecd3b8344eee39d08803a3e2a0f09e3c9..7c3658dccb7756af01fca51d6d17484f0594d2ba 100644
 --- a/claude/skills/poteto-mode/SKILL.md
 +++ b/claude/skills/poteto-mode/SKILL.md
 @@ -1,39 +1,44 @@
@@ -363,7 +363,7 @@ index 90bfebeecd3b8344eee39d08803a3e2a0f09e3c9..bd1be0168f34c2ccbb8a8eca22d57428
  
 +## Important notes
 +
-+When calling Claude from Codex, use `claude exec` (Claude Code) as a subagent. Never set a timeout or thinking cap. Do not impose any limit that has not been explicitly requested.
++When calling Claude from Codex, use `claude -p` (Claude Code) as a subagent. Never set a timeout or thinking cap. Do not impose any limit that has not been explicitly requested.
 +
 +The same requirements apply when calling Codex from Claude.
 +

@@ -1,5 +1,5 @@
 diff --git a/codex/.agents/skills/poteto-mode/SKILL.md b/codex/.agents/skills/poteto-mode/SKILL.md
-index 90bfebeecd3b8344eee39d08803a3e2a0f09e3c9..c6c284d6d8ba08f4eaa1f0273de740276c5da2d9 100644
+index 90bfebeecd3b8344eee39d08803a3e2a0f09e3c9..e5800b770bcdfde704a22f583d53b2447fe45ef2 100644
 --- a/codex/.agents/skills/poteto-mode/SKILL.md
 +++ b/codex/.agents/skills/poteto-mode/SKILL.md
 @@ -1,39 +1,43 @@
@@ -19,7 +19,7 @@ index 90bfebeecd3b8344eee39d08803a3e2a0f09e3c9..c6c284d6d8ba08f4eaa1f0273de74027
  
 +## Important notes
 +
-+When calling Claude from Codex, use `claude exec` (Claude Code) as a subagent. Never set a timeout or thinking cap. Do not impose any limit that has not been explicitly requested.
++When calling Claude from Codex, use `claude -p` (Claude Code) as a subagent. Never set a timeout or thinking cap. Do not impose any limit that has not been explicitly requested.
 +
 +The same requirements apply when calling Codex from Claude.
 +
