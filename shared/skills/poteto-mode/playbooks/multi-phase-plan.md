@@ -1,8 +1,4 @@
 ### Multi-phase or multi-PR plan
-{{#claude}}
-
-Compatibility: Claude Code exposes `/goal` as a user command, but no tool for the agent to arm or read the current goal was available in the tested runtime. The agent-driven goal operations below remain unported.
-{{/claude}}
 
 **You own the plan, not the code. The plan is a checklist an owner runs box by box and the operator audits from the evidence.** The plan is the deliverable. Do not implement.
 
@@ -56,12 +52,6 @@ Tests alone are not sufficient verification. A PR is verified only when its unit
 ### Arm the program
 
 - [ ] State the protocol and this plan to the operator, then stop. Start execution only on the operator's explicit go.
-{{#claude}}
-- [ ] On the operator's go, arm a `/goal` with this exact text. "<The plan path, the PR ids in order, the verification rule, who merges, and the done condition.>"
-{{/claude}}
-{{#codex}}
-- [ ] On the operator's go, call `create_goal` with this exact `objective`. "<The plan path, the PR ids in order, the verification rule, who merges, and the done condition.>"
-{{/codex}}
 - [ ] Read these from trunk at program start and during audits.
 {{#claude}}
   - [ ] `git show origin/main:claude/skills/poteto-mode/playbooks/<execution playbook>.md`
@@ -75,12 +65,12 @@ Tests alone are not sufficient verification. A PR is verified only when its unit
 {{#claude}}
   - [ ] `git show origin/main:claude/skills/poteto-mode/playbooks/opening-a-pr.md`
   - [ ] `git show origin/main:claude/skills/poteto-mode/internal/<each other leaf skill the program uses>/instructions.md`
-- [ ] Re-read the execution playbook from trunk and the armed /goal. Audit the operation against both and fix drift during the audit. Probe every active lane and judge progress by side effects only. Stand down a stuck lane and dispatch its replacement now. Then post a short status message to the operator in chat only when the audit found a tracked change that no earlier status message reported, such as a PR opened, a code-ready head, a round launched or closed, a verdict, a merge, a stuck agent and the action taken, a blocker added or cleared, or a decision only the operator can make. Name every such change and nothing else. Do not repeat a table, the merged list, or an unchanged blocker. If the audit found none, end the turn with no reply text. Either way, log this audit's row in your decision trail. The row names the items reported, or none.
+- [ ] Re-read the execution playbook from trunk. Audit the operation against it and fix drift during the audit. Probe every active lane and judge progress by side effects only. Stand down a stuck lane and dispatch its replacement now. Then post a short status message to the operator in chat only when the audit found a tracked change that no earlier status message reported, such as a PR opened, a code-ready head, a round launched or closed, a verdict, a merge, a stuck agent and the action taken, a blocker added or cleared, or a decision only the operator can make. Name every such change and nothing else. Do not repeat a table, the merged list, or an unchanged blocker. If the audit found none, end the turn with no reply text. Either way, log this audit's row in your decision trail. The row names the items reported, or none.
 {{/claude}}
 {{#codex}}
   - [ ] `git show origin/main:.agents/skills/poteto-mode/playbooks/opening-a-pr.md`
   - [ ] `git show origin/main:.agents/skills/poteto-mode/internal/<each other leaf skill the program uses>/instructions.md`
-- [ ] Audit procedure. Re-read the execution playbook from trunk and retrieve the active goal with `get_goal`. Audit the operation against both and fix drift during the audit. Probe every active lane and judge progress by side effects only. Stand down a stuck lane and dispatch its replacement now. Then post a short status message to the operator in chat only when the audit found a tracked change that no earlier status message reported, such as a PR opened, a code-ready head, a round launched or closed, a verdict, a merge, a stuck agent and the action taken, a blocker added or cleared, or a decision only the operator can make. Name every such change and nothing else. Do not repeat a table, the merged list, or an unchanged blocker. If the audit found none, end the turn with no reply text. Either way, log this audit's row in your decision trail. The row names the items reported, or none.
+- [ ] Re-read the execution playbook from trunk. Audit the operation against it and fix drift during the audit. Probe every active lane and judge progress by side effects only. Stand down a stuck lane and dispatch its replacement now. Then post a short status message to the operator in chat only when the audit found a tracked change that no earlier status message reported, such as a PR opened, a code-ready head, a round launched or closed, a verdict, a merge, a stuck agent and the action taken, a blocker added or cleared, or a decision only the operator can make. Name every such change and nothing else. Do not repeat a table, the merged list, or an unchanged blocker. If the audit found none, end the turn with no reply text. Either way, log this audit's row in your decision trail. The row names the items reported, or none.
 {{/codex}}
 - [ ] On the operator's hold or stand-down, send every owner a zero-writes order at once.
 
@@ -96,7 +86,7 @@ Tests alone are not sufficient verification. A PR is verified only when its unit
 ### PR mechanics, for every PR
 
 - [ ] Resolve the forge once. Default to `gh`; if `command -v origin` succeeds and Origin can resolve the repository, use `origin pr` for every PR operation. Record any fallback to `gh`. Never require `gt`.
-- [ ] Open the PR ready, never draft, with `origin pr create --status open --base <base-branch>` or `gh pr create --base <base-branch>` according to the resolved forge. A stack child targets its parent branch.
+- [ ] Open the PR ready, never draft, per [**Opening a PR**](../playbooks/opening-a-pr.md). Use the run's built-in PR tool when it has one, else `origin pr create --status open --base <base-branch>` or `gh pr create --base <base-branch>` according to the resolved forge. A stack child targets its parent branch.
 - [ ] Run the repo's lint and typecheck once before the PR-facing push. Push with hooks on.
 {{#claude}}
 - [ ] Read and apply the vendored [`deslop`](../internal/dependencies/cursor-team-kit/deslop/instructions.md) instructions before each commit and run `/no-comments` before review.

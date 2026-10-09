@@ -56,10 +56,10 @@ If a worker drops out, proceed with N-1 and note it.
 ## Phase C: Aggregate
 
 {{#claude}}
-Read the result and terminal report for every worker. Drop a result that does not record the SHAs and method its brief names, and rerun that worker once. After a second miss, record a gap. A gap does not count as a pass. For coverage, every required slice needs a result. For a race, apply the selection rule declared up front. Use first pass, rank all, or best-of. Do not paste raw worker dumps.
+Read the result and terminal report for every worker. Drop a result that does not record the SHAs and method its brief names, and respawn that worker once. After a second miss, record a gap. A gap does not count as a pass. For coverage, every required slice needs a result. For a race, apply the selection rule declared up front. Use first pass, rank all, or best-of. Do not paste raw worker dumps.
 {{/claude}}
 {{#codex}}
-Read every worker result. Drop a result that does not record the SHAs and method its brief names, and rerun that worker once. After a second miss, record a gap. A gap does not count as a pass. For coverage, every required slice needs a result. For a
+Read every worker result. Drop a result that does not record the SHAs and method its brief names, and respawn that worker once. After a second miss, record a gap. A gap does not count as a pass. For coverage, every required slice needs a result. For a
 race, apply the selection rule declared up front. Use first pass, rank all, or
 best-of. Do not paste raw worker dumps.
 {{/codex}}
