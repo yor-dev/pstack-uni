@@ -1,6 +1,6 @@
 # 本家の更新を取り込む
 
-比較元の正本は [maintenance/upstream.json](../maintenance/upstream.json)。現在は `cursor/plugins` の pstack **0.15.5**、コミット `ecc249f1e306fc64ddf83c7bed16cacf7c2239db` に固定している。同梱する cursor-team-kit の3指示書と LICENSE も同じ固定コミットのものを使う。
+比較元の正本は [maintenance/upstream.json](../maintenance/upstream.json)。現在は `cursor/plugins` の pstack **0.15.9**、コミット `e43c7ee26e0038c6c1fa8380dd34ce86ff94cb2a` に固定している。同梱する cursor-team-kit の3指示書と LICENSE も同じ固定コミットのものを使う。
 
 この仕組みは開発者用であり、実行時にスキルへ指示を追加しない。スキル本文の正本は `shared/skills/` に置き、人が翻訳・レビューする。`claude/`・`codex/` の配布ファイルは `tools/generate.py` で生成し、パッチは生成結果を記録する。本家の変更を自動翻訳しない。
 
@@ -80,7 +80,7 @@ Claude manifest の三者比較では、本家のバージョン変更から切�
 
 改名は削除＋追加として表示する。ファイル名の類似だけで対応先を決めない。本家が削除し移植側に変更がないファイルは候補から削除されるが、参照元の修正も確認する。Claude 専用 manifest など片側だけが採用する元ファイルは、対応表で他方の除外理由も確認する。
 
-競合マーカーがないことは、正しく翻訳できた証拠ではない。新しい Cursor API、読み込み条件、内部参照、モデル選択、テンプレートや手順の変更を確認する。`poteto-mode` と `setup-pstack` を登録し、その他の45スキルを内部ファイルにする構成と、ユーザー指定の除外範囲は維持する。プラットフォームで実現できない操作は、独自の行動指示やサービスで補わず非対応として記録する。
+競合マーカーがないことは、正しく翻訳できた証拠ではない。新しい Cursor API、読み込み条件、内部参照、モデル選択、テンプレートや手順の変更を確認する。`poteto-mode` と `setup-pstack` を登録し、その他の48スキルを内部ファイルにする構成と、ユーザー指定の除外範囲は維持する。プラットフォームで実現できない操作は、独自の行動指示やサービスで補わず非対応として記録する。
 
 ## レビュー結果を配布版へ反映する
 
@@ -125,3 +125,17 @@ python3 -m unittest discover -s tools -p 'test_*.py'
 ## 0.15.5 への更新記録
 
 2026-09-28：0.15.2 から 0.15.5 の対象162ファイルを比較した。変更は45ファイルで、新規・削除はなかった。共通原本で本文とスクリプトの変更を反映し、両版274ファイルを生成した。本家 README と guide、および配布版独自の version を持つ manifest は、対応表の除外・正規化方針どおりに扱った。Claude 145ファイル・Codex 133ファイルのパッチを新基点から復元検証した。
+
+## 0.15.9 への更新記録
+
+2026-10-05：0.15.5 から 0.15.9 の差分は21ファイルで、新規3ファイル、既存18ファイルの変更、削除なし。新規の `correct`、`benchmark-checklist`、`principle-explain-the-number` は既存の下位スキルと同じ内部ファイル構成へ配置した。既存本文の変更と翻訳判断は [差分一覧](upstream-differences.md#0159-更新で反映した動作) に記録した。
+
+両版280ファイルを生成し、生成結果の一致と全ファイル対応を確認した。Claude 148ファイル・Codex 136ファイルのパッチ復元と実行権限の検証、保守ツール13テスト、Claude plugin validator、Codexの両入口のnative skill validatorに合格した。変更した配布本文のリンクはすべて解決した。新規3指示書は登録設定の除去・内部リンクの変換以外、本家本文と一致する。計画検証は両環境でgoal・定期起動を含まない正例と、trunk読取・status message・live laneをそれぞれ欠く負例、計8例で期待した結果を確認した。JavaScriptの構文検査も両版で通った。
+
+Codex CLI 0.160.0 の一時プロジェクトで `$poteto-mode` を明示起動し、generatorを反復しない測定スクリプトを1回の概算として評価した。親子はGPT-6.1 Solを使用し、子は親のモデルを継承した。入口・benchmark-checklist・explain-the-numberの読み込み、新規の子への委任、子のコード調査と結果受け渡しを実ログで確認した。親は約0.012916 msの測定値を得たが、対象の10万件処理が実行されていないとして性能値の採用を拒否した。macOSでは `nproc` がなく、read-only sandboxでは `sysctl` のコア数取得も拒否された。配布本文へ独自の代替手順は追加していない。
+
+Claude CLI 2.1.278 の同じ試験は、初回はOAuth認証の期限切れにより実行前に失敗した。ログイン後の再試行では、Claude Opus 5 / lowでプラグイン登録、benchmark-checklist・explain-the-numberの読み込み、1回の測定、general-purposeの子1人の非同期起動を実ログで確認した。測定値は約0.012833 msだった。試験用の `subprocess.run` に `timeout=300` を設定していたため、子の結果を親が受け取る前に終了した。これは試験実施者が設定した制限であり、Claudeや実行環境の制限ではない。この試行では結果受け渡しと最終判定は未確認である。再試行ログは `runtime/claude/retry-events.jsonl`。correctの修正工程、architectの設計工程、Autopilotの実PR運用、marketplace・skills CLIによる導入も今回未検証である。構造検証や上記の限定試験を、全ワークフローの実行成功とは扱わない。
+
+その後、`subprocess.run` の timeout を取り除いて再実行し、終了コード0、stderr空で完了した。`runtime/claude/unbounded-events.jsonl` では native `Agent` による `pstack:poteto-agent` の起動、子の報告の受け渡し、親の最終判定を確認した。約0.01225 msという測定値について、generatorを反復しておらず測定対象の処理が走っていないとして採用を拒否した。これは先頭注意事項を追加する前の限定試験であり、Claude Code / Codex のCLI相互呼出しやIDによる文脈維持を検証したものではない。
+
+依頼文・呼出引数・実ログは `tmp/experiments/upstream-0.15.9/runtime/`、計画検証は同ディレクトリの `autopilot-validation/results.json`、検証概要は `verification.json` に保存した。一時記録はgit管理対象外であり、この節を検証範囲の記録とする。

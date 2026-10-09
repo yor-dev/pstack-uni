@@ -1,10 +1,10 @@
 # Codex への翻訳
 
-本家 pstack v0.15.5、`cursor/plugins@ecc249f1e306fc64ddf83c7bed16cacf7c2239db` を基準とする。2026-09-28 更新。以下の実行記録は、それぞれの実施時点の移植版で入口・委任・設定保存・コメント編集などを検証した結果であり、0.15.5 更新後の全手順の実行試験を意味しない。実行環境の制約と未検証の範囲も記録する。
+本家 pstack v0.15.9、`cursor/plugins@e43c7ee26e0038c6c1fa8380dd34ce86ff94cb2a` を基準とする。2026-10-05 更新。以下の実行記録は、それぞれの実施時点の移植版で入口・委任・設定保存・コメント編集などを検証した結果であり、0.15.9 更新後の全手順の実行試験を意味しない。実行環境の制約と未検証の範囲も記録する。
 
 ユーザー指定により、クラウドは使用しない。本家のクラウド worker はローカルの `spawn_agent` に対応づける。担当の人数・役割・モデル選択・結果集約は維持する。クラウド専用の定期起動、routine、クラウドセッションの継続・回収は対象外とし、未完了の開発項目には数えない。
 
-2026-09-20 のユーザー指定により、ローカルを含む定期タイマーによるターン終了後の再開も対象外とする。Autopilot の30分ごとの起動と計画テンプレートの定期起動手順、Orchestrate と Autonomous run の予備 heartbeat を削除した。監査内容は残し、別の自動起動条件は追加しない。`check-plan.mjs` も30分の定期処理を必須にしない。子の完了通知や watcher の出力イベントとは別の除外指定である。 定期起動を含まない両版の計画テンプレートは検証を通り、goal 作成を除いた計画は該当項目で失敗した。記録は `tmp/experiments/no-timed-resume/`。
+2026-09-20 のユーザー指定により、ローカルを含む定期タイマーによるターン終了後の再開も対象外とする。Autopilot の30分ごとの起動と計画テンプレートの定期起動手順、Orchestrate と Autonomous run の予備 heartbeat を削除した。監査内容は残し、別の自動起動条件は追加しない。`check-plan.mjs` も30分の定期処理を必須にしない。子の完了通知や watcher の出力イベントとは別の除外指定である。 当時の定期起動を含まない両版の計画テンプレートは検証を通り、goal 作成を除いた計画は該当項目で失敗した。記録は `tmp/experiments/no-timed-resume/`。0.15.9 では本家の goal 要件削除を反映し、1時間の定期監査も引き続き除外する。
 
 ## 配置と明示起動
 
@@ -33,7 +33,7 @@ codex/
     LICENSE
 ```
 
-公開スキルは `poteto-mode` と `setup-pstack`。その他45個の下位スキルは通常の内部ファイルとして配置し、元の参照資料とスクリプトも保持する。`poteto-mode` は `agents/openai.yaml` の `allow_implicit_invocation: false` で明示起動専用にし、入口を `$poteto-mode` とする。モデル設定は `$setup-pstack` から起動する。[公式のスキル登録と呼び出しポリシー](https://developers.openai.com/ja-JP/docs/build-skills)。`mode`、`icon`、`color` は Codex の同名機能として扱わない。`reminder` と `readonly` の権限制限はユーザー指定で対象外。本文にある調査の作業範囲は保持する。
+公開スキルは `poteto-mode` と `setup-pstack`。その他48個の下位スキルは通常の内部ファイルとして配置し、元の参照資料とスクリプトも保持する。`poteto-mode` は `agents/openai.yaml` の `allow_implicit_invocation: false` で明示起動専用にし、入口を `$poteto-mode` とする。モデル設定は `$setup-pstack` から起動する。[公式のスキル登録と呼び出しポリシー](https://developers.openai.com/ja-JP/docs/build-skills)。`mode`、`icon`、`color` は Codex の同名機能として扱わない。`reminder` と `readonly` の権限制限はユーザー指定で対象外。本文にある調査の作業範囲は保持する。
 
 ## 委任の対応
 
@@ -41,7 +41,7 @@ codex/
 | --- | --- | --- |
 | `Task`、背景実行 | `spawn_agent` による非同期の子起動と完了待機 | ユーザー指定によりローカル実行に限定。 |
 | `generalPurpose` | poteto-agent 本文を付けない通常の `spawn_agent` | how の人数・複雑度分岐・テンプレートは維持。 |
-| `poteto-agent`、`comment-sicko` | 内部のエージェント定義を読み、その本文を子への `message` に渡す | ネイティブ custom agent と同じ指示優先度になるとは主張しない。既存の子を再開する description は親が読むファイル内に保持するが、native metadata による自動ルーティングはない。 |
+| `poteto-agent`、`comment-sicko` | 内部のエージェント定義を読み、その本文を子への `message` に渡す | ネイティブ custom agent と同じ指示優先度になるとは主張しない。新しい子を原則とし、例外時のみ再開する description は親が読むファイル内に保持するが、native metadata による自動ルーティングはない。 |
 | モデル名に含まれる effort | `model` と `reasoning_effort` の別引数 | 実行可能なモデルは現在のツールで確認する。 |
 | `inherit-parent` / `auto` | 親のモデルと effort を明示して子へ渡す | Codex の別途設定された子の既定値に変わることを避け、元の意味を保持する。 |
 | why の MCP 発見 | 利用可能ツール・リソース記述と、公開されていればツール検索 | 実サービスを使った why 全体は未検証。 |
@@ -77,9 +77,9 @@ Cursor の実行環境はない。本家ファイルの要求と、Codex 上の�
 
 ## goal と質問 UI
 
-Autopilot-full、Autopilot-stack、Multi-phase plan の goal 作成を `create_goal`、再読を `get_goal` へ翻訳した。`tmp/experiments/native-runtime/codex/evidence.json` に、実際の作成・取得、一時ファイルの書込と読取、`update_goal(status="complete")` の成功を保存した。実行モデルは GPT-5.6 Luna / xhigh。定期タイマーの除外で goal 操作は変更しない。
+0.15.5 までの Autopilot-full、Autopilot-stack、Multi-phase plan の goal 作成を `create_goal`、再読を `get_goal` へ翻訳した。`tmp/experiments/native-runtime/codex/evidence.json` に、実際の作成・取得、一時ファイルの書込と読取、`update_goal(status="complete")` の成功を保存した。実行モデルは GPT-5.6 Luna / xhigh。当時の定期タイマー除外では goal 操作を変更していない。0.15.9 では本家に従い、これらの goal 操作と計画検査の goal 必須条件を削除する。
 
-同梱 `check-plan.mjs` の goal 必須項目も `create_goal` に対応させた。翻訳後の計画テンプレートが通り、goal 作成を欠く計画はその項目だけで失敗することを Node.js 25.1.0 で確認した。記録は `tmp/experiments/native-runtime/plan-validator/`。
+当時の同梱 `check-plan.mjs` の goal 必須項目も `create_goal` に対応させた。翻訳後の計画テンプレートが通り、goal 作成を欠く計画はその項目だけで失敗することを Node.js 25.1.0 で確認した。記録は `tmp/experiments/native-runtime/plan-validator/`。
 
 実行パスは配布先の `.agents/skills/poteto-mode/` に合わせた。一時プロジェクトへコピーし、プロジェクトルートから計画検証が動くことも確認した。Orchestrate の store は既存の `ORCH_STORE` で `orchestrate/<project-slug>/` を指定する。Codex のシステムプロンプトに Cursor の store path があるとは仮定しない。
 

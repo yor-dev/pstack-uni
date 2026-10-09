@@ -1,6 +1,6 @@
 # Claude Code への翻訳
 
-対象は本家 pstack v0.15.5、`cursor/plugins@ecc249f1e306fc64ddf83c7bed16cacf7c2239db`。2026-09-28 更新。原文は [poteto-mode][upstream-mode]、[how][upstream-how]、[poteto-agent][upstream-agent]、[調査プレイブック][upstream-investigation]。以下の実行記録は、それぞれの実施時点の移植版を検証した結果であり、0.15.5 更新後の全手順の実行試験を意味しない。実行環境の制約と未検証の範囲も記録する。
+対象は本家 pstack v0.15.9、`cursor/plugins@e43c7ee26e0038c6c1fa8380dd34ce86ff94cb2a`。2026-10-05 更新。原文は [poteto-mode][upstream-mode]、[how][upstream-how]、[poteto-agent][upstream-agent]、[調査プレイブック][upstream-investigation]。以下の実行記録は、それぞれの実施時点の移植版を検証した結果であり、0.15.9 更新後の全手順の実行試験を意味しない。実行環境の制約と未検証の範囲も記録する。
 
 本家が指定する条件・手順・委譲・段階的な読み込みを維持し、Cursor 固有の表現を Claude Code の対応機能へ翻訳する。以下は開発者向けの翻訳記録であり、実行時にモデルへ渡す追加指示ではない。
 
@@ -8,9 +8,9 @@
 
 ユーザー指定により、クラウドは使用しない。本家のクラウド worker はローカルの `Agent` に対応づける。担当の人数・役割・モデル選択・結果集約は維持する。クラウド専用の定期起動、routine、クラウドセッションの継続・回収は対象外とし、未完了の開発項目には数えない。
 
-2026-09-20 のユーザー指定により、ローカルを含む定期タイマーによるターン終了後の再開も対象外とする。Autopilot の30分ごとの起動と計画テンプレートの定期起動手順、Orchestrate と Autonomous run の予備 heartbeat を削除した。監査内容は残し、別の自動起動条件は追加しない。`check-plan.mjs` も30分の定期処理を必須にしない。子の完了通知や watcher の出力イベントとは別の除外指定である。 定期起動を含まない両版の計画テンプレートは検証を通り、goal 作成を除いた計画は該当項目で失敗した。記録は `tmp/experiments/no-timed-resume/`。
+2026-09-20 のユーザー指定により、ローカルを含む定期タイマーによるターン終了後の再開も対象外とする。Autopilot の30分ごとの起動と計画テンプレートの定期起動手順、Orchestrate と Autonomous run の予備 heartbeat を削除した。監査内容は残し、別の自動起動条件は追加しない。`check-plan.mjs` も30分の定期処理を必須にしない。子の完了通知や watcher の出力イベントとは別の除外指定である。 当時の定期起動を含まない両版の計画テンプレートは検証を通り、goal 作成を除いた計画は該当項目で失敗した。記録は `tmp/experiments/no-timed-resume/`。0.15.9 では本家の goal 要件削除を反映し、1時間の定期監査も引き続き除外する。
 
-ユーザー指定により、ワークフロー用の下位45スキルは個別登録せず、入口の内部ファイルとして実装する。モデル設定用の `setup-pstack` は独立したネイティブスキルとして登録する。以下の初期試験で前提にしていた「本家の全スキルを個別登録する構造を維持する」という制約は撤回した。
+ユーザー指定により、ワークフロー用の下位48スキルは個別登録せず、入口の内部ファイルとして実装する。モデル設定用の `setup-pstack` は独立したネイティブスキルとして登録する。以下の初期試験で前提にしていた「本家の全スキルを個別登録する構造を維持する」という制約は撤回した。
 
 ユーザー指定により、`reminder` は Claude Code 版・Codex 版ともに移植対象から除外する。Claude 版の frontmatter から削除し、本文への移動や代替フックは行わない。本家の [導入 PR #144](https://github.com/cursor/plugins/pull/144) は、開始時に本文、後続ターンに reminder を渡すと説明している。初回の実行記録に reminder がないことだけでは、指示の欠落やプレイブック省略の原因を示せない。
 
@@ -41,7 +41,7 @@ claude/
     SKILL.md
 ```
 
-`poteto-mode/SKILL.md` と `setup-pstack/SKILL.md` をネイティブスキルとして登録する。その他45個の下位スキルは `internal/<name>/instructions.md` とし、参照資料やスクリプトをそれぞれのフォルダに保持する。内部ファイルではスキル登録用の `disable-model-invocation` フィールドを除く。自動選択されるネイティブスキルに変更するものではない。
+`poteto-mode/SKILL.md` と `setup-pstack/SKILL.md` をネイティブスキルとして登録する。その他48個の下位スキルは `internal/<name>/instructions.md` とし、参照資料やスクリプトをそれぞれのフォルダに保持する。内部ファイルではスキル登録用の `disable-model-invocation` フィールドを除く。自動選択されるネイティブスキルに変更するものではない。
 
 以下の `internal-loading` 試験は、`setup-pstack` を独立登録する前に行った。現行版では `claude plugin validate ./claude` と marketplace の検証に合格した。`/pstack:setup-pstack` の実行試験は CLI が未ログインとして拒否したため、登録後の対話動作は未確認。
 
@@ -145,7 +145,7 @@ poteto-agent の子は入口ファイルを読まず、対象コードだけを�
 
 | 本家の箇所・表現 | Claude Code の表現 | 判定・根拠 |
 | --- | --- | --- |
-| `.cursor-plugin/plugin.json`、`skills/`、`agents/` | `.claude-plugin/plugin.json`、`skills/poteto-mode/`、`skills/setup-pstack/` と `agents/` | その他45スキルは内部ファイル構成。プラグインの登録形式は[公式仕様][plugins]に対応。 |
+| `.cursor-plugin/plugin.json`、`skills/`、`agents/` | `.claude-plugin/plugin.json`、`skills/poteto-mode/`、`skills/setup-pstack/` と `agents/` | その他48スキルは内部ファイル構成。プラグインの登録形式は[公式仕様][plugins]に対応。 |
 | `poteto-mode/SKILL.md` の `name: Poteto Mode` | `name: poteto-mode` | プラグインでは `name` がコマンド末尾を決めるため、既存の `/poteto-mode` という識別子を維持する。[スキル命名仕様][names]。本文の見出しは維持。 |
 | `/poteto-mode` | `/pstack:poteto-mode` | プラグイン名前空間。[スキル命名仕様][names]。短縮名も利用できるが、同名衝突を避けた試験では完全名を使う。 |
 | `Task` による委譲 | `Agent` | 仕様対応。[ツール一覧][tools]。タスク一覧の `TaskCreate` とは別機能。 |
@@ -165,7 +165,7 @@ poteto-agent の子は入口ファイルを読まず、対象コードだけを�
 
 | 本家の箇所 | 対応内容と制約 | 採用しない変更 |
 | --- | --- | --- |
-| `disable-model-invocation: true` と、起動済みモードから `how` 等へのルーティング | `poteto-mode` は明示起動を維持する。`how` 等45スキルは内部ファイル構成へ変更し、必要時に本文を取得する。`setup-pstack` は本家と同じく自動選択を禁止しない。 | ワークフロー用の45スキルを自動選択されるネイティブスキルとして公開すること。 |
+| `disable-model-invocation: true` と、起動済みモードから `how` 等へのルーティング | `poteto-mode` は明示起動を維持する。`how` 等48スキルは内部ファイル構成へ変更し、必要時に本文を取得する。`setup-pstack` は本家と同じく自動選択を禁止しない。 | ワークフロー用の48スキルを自動選択されるネイティブスキルとして公開すること。 |
 | `mode: true` | Claude の公開 frontmatter 表に同名設定はないため、配布版の frontmatter から除いた。明示起動後のコンテキスト管理は Claude の標準機能に従い、コンパクション後の全文保持は完成条件にしない。`reminder` はユーザー指定で対象外。[スキル設定][skills] | セッション開始時の独自誘導、`context: fork` の追加。 |
 | `icon`、`color` | Claude のスキル設定表に対応がないため、配布版の frontmatter から除いた。 | 別の実行条件として流用すること。 |
 | `/setup-pstack` のモデル検出・reasoning budget | `/pstack:setup-pstack` として登録。保存先・モデルと effort の分離・native 定義選択は実装。検出した指定が Agent 引数で使えることと、同じモデル系列への対応が必要。現環境で利用できない本家モデルが残る。対話設定全体は未検証。 | 本家のモデル選択を検証用の固定モデルへ全面的に書き換えること。 |
@@ -187,7 +187,7 @@ Claude の [native `/goal`](https://code.claude.com/docs/en/goal) はユーザ�
 
 同試験の保存済み assistant レコード4件はすべて `claude-opus-5` / `low`。起動条件は `command.json`、抽出結果は `evidence.json`。直前の `goal/` の試験は、ユーザー設定の環境変数で実効 effort が `max` になっていたため、指定条件の試験には数えない。`goal-low/` では `--settings` の一時設定で `CLAUDE_CODE_EFFORT_LEVEL=low` を優先させた。常用設定は変更していない。
 
-この結果から、現在の Claude Code 2.1.276 で agent 自身が goal を設定する翻訳は成立していない。ユーザーへ設定操作を移す変更、別の Claude プロセス、独自フックや状態ファイル編集による代替は実装していない。公開 SDK の `SDKActiveGoalMessage` は評価結果の通知型であり、agent の設定ツールではない。
+この結果から、試験時の Claude Code 2.1.276 で agent 自身が goal を設定する翻訳は成立していない。ユーザーへ設定操作を移す変更、別の Claude プロセス、独自フックや状態ファイル編集による代替は実装していない。公開 SDK の `SDKActiveGoalMessage` は評価結果の通知型であり、agent の設定ツールではない。
 
 以前調べた `claude --cloud` による対応案は、クラウドを使用しない指定により採用しない。`swarm` はローカルの `Agent` で担当を起動し、返された報告を集約する。クラウドタスクは実際に起動していない。
 
@@ -258,7 +258,7 @@ Claude 用 manifest は標準の `skills/` と `agents/` の探索を使用す�
 
 ## 実行環境の制約
 
-agent 自身による goal の設定・取得は、確認した実行環境では利用できない。これは追加実装待ちの項目ではなく、依存する本家の操作を非対応とする制約である。コンパクション後の全文保持は未完了項目から除く。Orchestrate の3階層委任は上記の対話 CLI 試験で確認した。クラウド worker と cloud-sleeper は対象外。`make-bot-ui` もクラウド routine を必要とするため対象外とし、ローカルの独自サービスで代替する実装は追加しない。元の指示が残っていることを、Claude で実行できる証拠にはしない。
+agent 自身による goal の設定・取得は、過去に確認した実行環境では利用できなかった。0.15.9 の本家は Autopilot-full / stack と Multi-phase plan から goal の設定・取得を削除しており、移植版もその変更を反映する。コンパクション後の全文保持は未完了項目から除く。Orchestrate の3階層委任は上記の対話 CLI 試験で確認した。クラウド worker と cloud-sleeper は対象外。`make-bot-ui` もクラウド routine を必要とするため対象外とし、ローカルの独自サービスで代替する実装は追加しない。元の指示が残っていることを、Claude で実行できる証拠にはしない。
 
 モデルによる手順省略の観測と、これらの未翻訳の実行指示は別の問題である。前者だけを根拠に、本家の行動指示を増やす修正は行わない。
 
@@ -278,7 +278,7 @@ Cursor の実行環境はない。本家のファイルから確認した要求�
 [skill-lifecycle]: https://code.claude.com/docs/en/skills#skill-content-lifecycle
 [skill-locations]: https://code.claude.com/docs/en/skills#choose-where-skills-load
 [mcp-discovery]: https://code.claude.com/docs/en/mcp#scale-with-mcp-tool-search
-[upstream-mode]: https://github.com/cursor/plugins/blob/ecc249f1e306fc64ddf83c7bed16cacf7c2239db/pstack/skills/poteto-mode/SKILL.md
-[upstream-how]: https://github.com/cursor/plugins/blob/ecc249f1e306fc64ddf83c7bed16cacf7c2239db/pstack/skills/how/SKILL.md
-[upstream-agent]: https://github.com/cursor/plugins/blob/ecc249f1e306fc64ddf83c7bed16cacf7c2239db/pstack/agents/poteto-agent.md
-[upstream-investigation]: https://github.com/cursor/plugins/blob/ecc249f1e306fc64ddf83c7bed16cacf7c2239db/pstack/skills/poteto-mode/playbooks/investigation.md
+[upstream-mode]: https://github.com/cursor/plugins/blob/e43c7ee26e0038c6c1fa8380dd34ce86ff94cb2a/pstack/skills/poteto-mode/SKILL.md
+[upstream-how]: https://github.com/cursor/plugins/blob/e43c7ee26e0038c6c1fa8380dd34ce86ff94cb2a/pstack/skills/how/SKILL.md
+[upstream-agent]: https://github.com/cursor/plugins/blob/e43c7ee26e0038c6c1fa8380dd34ce86ff94cb2a/pstack/agents/poteto-agent.md
+[upstream-investigation]: https://github.com/cursor/plugins/blob/e43c7ee26e0038c6c1fa8380dd34ce86ff94cb2a/pstack/skills/poteto-mode/playbooks/investigation.md

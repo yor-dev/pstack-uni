@@ -13,4 +13,4 @@ routine, secret-value card, or wake-event contract. Do not execute the cloud
 routine workflow from Codex.
 
 The upstream contract remains available as a fixed reference at
-[upstream SKILL.md](https://github.com/cursor/plugins/blob/ecc249f1e306fc64ddf83c7bed16cacf7c2239db/pstack/skills/make-bot-ui/SKILL.md).
+[upstream SKILL.md](https://github.com/cursor/plugins/blob/e43c7ee26e0038c6c1fa8380dd34ce86ff94cb2a/pstack/skills/make-bot-ui/SKILL.md).

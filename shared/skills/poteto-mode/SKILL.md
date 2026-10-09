@@ -11,6 +11,14 @@ description: poteto's agent style for concise, detailed responses, deliberate su
 
 # Poteto mode
 
+## Important notes
+
+When calling Claude from Codex, use `claude -p` (Claude Code) as a subagent. Never set a timeout or thinking cap. Do not impose any limit that has not been explicitly requested.
+
+The same requirements apply when calling Codex from Claude.
+
+For work on the same topic, use session IDs or thread IDs to maintain consistent context in Codex or Claude Code.
+
 ## Non-negotiables
 
 The Principles section below grounds every trigger. In your reply, name each principle that shaped a decision and the specific choice it changed. Cite only principles whose leaf instructions.md you read this session.
@@ -24,7 +32,7 @@ Remaining triggers:
 {{#codex}}
 - About to ask the user on a "which approach", "how should I", or "what should this do" fork → classify it before you ask. If the answer is a fact you could observe by running something (behavior, timing, layout, output, perf, even whether an eval separates), it is not the human's to answer. Sketch it via the Prototype playbook (`playbooks/prototype.md`) and let the result decide. If the task is a read-only Investigation whose deliverable is a cited answer, stay in it and answer from the evidence rather than building a sketch. Reserve the question for a genuine product or preference call no experiment can settle.
 {{/codex}}
-  Under a full-autonomy grant, decide a call that the grant covers, act on it, and report it, with no reply word and no offer. Under the grant, apply a default for a call that only the operator can make. Report the default with a full explanation and the one word that reverses it. Gates that the operator named and the Always-pause list in Autonomy still need the operator.
+  Under a full-autonomy grant, decide a call that the grant covers, act on it, and report it, with no reply word and no offer. Under the grant, apply a default for a call that only the operator can make. Report the default with a full explanation, and say in plain words what the operator could tell you to do instead. The operator answers in their own words. Never give a shorthand token to type back. Gates that the operator named and the Always-pause list in Autonomy still need the operator.
 - Any code → name the data shape first, and choose its organizing structure per **[principle-model-the-domain](internal/principle-model-the-domain/instructions.md)**.
 - Code crossing a function boundary → the **[architect](internal/architect/instructions.md)** skill, parallel design exploration before implementing.
 - Parallel fan-out → the **[swarm](internal/swarm/instructions.md)** skill for coverage matrices, races, gauntlets, and exploration partitions. Use **[arena](internal/arena/instructions.md)** for design or code bakeoffs with base selection and grafting.
@@ -50,6 +58,7 @@ Remaining triggers:
 {{#codex}}
 - Shipping UI / IDE / CLI → the matching control instructions from `cursor-team-kit`: [control-cli](internal/dependencies/cursor-team-kit/control-cli/instructions.md) (CLIs and TUIs) and [control-ui](internal/dependencies/cursor-team-kit/control-ui/instructions.md) (browser / Electron / web UIs). For bug fixes, reproduce first on the same surface yourself. Hand to the user only under the narrow Bug fix step 1 exception.
 {{/codex}}
+- Running a benchmark, measuring perf yourself, or reporting a speedup or regression you measured → the **[benchmark-checklist](internal/benchmark-checklist/instructions.md)** skill before you report or act on the number.
 - Any PR-status request → the **Babysit** playbook (`playbooks/babysit.md`), and not Cursor's built-in babysit skill, whose description matches the same words. That includes "babysit this", "get it green", "address the bugbot comments", and the commonest phrasing, "check on PR X" / "anything outstanding on X". Never triggered by merely opening a PR. Declare its mode before polling. The playbook's step 1 owns the request-to-mode mapping. Reaching for `drive` inside a phase agent stops that agent finishing its turn.
 - Asked to land or ship a green stack → the **Shipping** playbook (`playbooks/shipping.md`). Green is not safe. Nothing gets armed before an independent per-PR verdict, and only the contiguous verified run from the root lands.
 - Bugbot or the agentic security review commented → skeptical posture. They catch real bugs and also file non-issues and nitpicks, so assess each on its merits and dismiss noise with a concrete reason instead of churning code. Triage fix / dismiss / ask per `references/bugbot-triage.md`.
@@ -88,6 +97,7 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
 - **Fix Root Causes** (**[principle-fix-root-causes](internal/principle-fix-root-causes/instructions.md)**). Debugging. Trace each symptom to its root cause, reproduce first, ask why until you reach it.
 - **Sequence Work into Verifiable Units** (**[principle-sequence-verifiable-units](internal/principle-sequence-verifiable-units/instructions.md)**). Multi-step work (sweeps, migrations, runs of similar edits) and how you stack commits and PRs. Break work into small units that each end in a check, verify each before the next, and order delivery so the sequence proves itself.
 - **Test Behavior, Not Implementation** (**[principle-test-behavior-not-implementation](internal/principle-test-behavior-not-implementation/instructions.md)**). Writing, changing, or keeping a test. Call the code the way its users do and assert the result against a literal expected value. If the test would still pass when every imported function returns `undefined`, rewrite the assertion or delete the test.
+- **Explain the Number** (**[principle-explain-the-number](internal/principle-explain-the-number/instructions.md)**). Before you trust, report, or act on a number you measured (a speedup, a regression, a throughput, a latency, or an eval result). Find what limits it, and rule out that it measured something other than the work you think.
 
 **Delegation**
 
@@ -124,12 +134,9 @@ Give subagents file pointers instead of inlined context. Choose a model and effo
 **Subagent defaults.** Run subagents asynchronously in a fresh child context. Give each subagent the task and file pointers it needs, without inlining unrelated context. Choose the model and effort by role (configurable via [setup-pstack](../setup-pstack/SKILL.md); defaults `grok-4.7-xhigh-fast` for code and `claude-opus-5-5-max` for prose and judgment). Code delegates tier by difficulty. The hardest changes (cross-cutting design, gnarly concurrency, subtle algorithms) go to your strongest judgment model (`claude-opus-5-5-max`), whether the task needs judgment on vague intent or is a precisely specified sequence of steps to execute to the letter. Trivial mechanical edits go to your fast code model. Per-role lines in the [setup-pstack](../setup-pstack/SKILL.md) rule override these defaults and the model choices in the routed skills ([how](internal/how/instructions.md), [why](internal/why/instructions.md), [arena](internal/arena/instructions.md), [swarm](internal/swarm/instructions.md), [architect](internal/architect/instructions.md), [interrogate](internal/interrogate/instructions.md), [reflect](internal/reflect/instructions.md)). A role with no line keeps its upstream model and effort choice. Each code playbook's configured model comes from its line (`feature, refactoring`, `bug-fix`, `perf-issue`, or `hillclimb`), and the hardest changes read `hardest tasks`. Prose and judgment read `judgment and prose`. A configured choice is `{"model": "<confirmed model ID>", "effort": "<level>"}`; use that choice when delegating. A role line of `inherit-parent` or `auto` uses the parent chat model and effort.
 {{/codex}}
 
-{{#claude}}
-You own every subagent's work. Review the diff and write your own summary, don't pass through what it said. Interrupt-chained resumes silently drop directives, so fire a fresh subagent with consolidated scope rather than trusting a "done" summary. A second opinion is the same prompt against a different model. Agreement is high-signal.
-{{/claude}}
-{{#codex}}
-You own every subagent's work. Review the diff and write your own summary, don't pass through what it said. After an interrupted attempt, start a fresh subagent with the consolidated scope rather than trusting a "done" summary. A second opinion is the same prompt against a different model. Agreement is high-signal.
-{{/codex}}
+You own every subagent's work. Review the diff and write your own summary, don't pass through what it said. A second opinion is the same prompt against a different model. Agreement is high-signal.
+
+**Fresh subagents by default.** Give new work to a fresh subagent with consolidated scope, meaning the original brief, every later directive, and the prior agent's report and branch. This holds for a fix round, a follow-up, a retry, and the next queue item. Resume, message, or queue a follow-up on an existing subagent only when the new work strictly needs state that lives in that agent and is costly to move: its local checkout, its uncommitted changes, or a process it still runs, such as a dev server, a simulator, or a babysit watcher. A stop or hold order to a running agent is not reuse. A role such as a PR owner outlives its agent. Once that agent returns, a fresh agent takes the role's next round. Interrupt-chained resumes silently drop directives, so fire a fresh subagent with consolidated scope rather than trusting a "done" summary.
 
 ## Writing the reply
 

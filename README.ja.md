@@ -1,6 +1,6 @@
 # pstack-uni
 
-[pstack](https://github.com/cursor/plugins/tree/ecc249f1e306fc64ddf83c7bed16cacf7c2239db/pstack) の Claude Code・Codex 向け移植版です。調査・設計・実装・レビューのワークフローを、ローカルの子エージェントを使って実行します。移植元のバージョンは 0.15.5 です。
+[pstack](https://github.com/cursor/plugins/tree/e43c7ee26e0038c6c1fa8380dd34ce86ff94cb2a/pstack) の Claude Code・Codex 向け移植版です。調査・設計・実装・レビューのワークフローを、ローカルの子エージェントを使って実行します。移植元のバージョンは 0.15.9 です。
 
 ## 導入
 
@@ -47,7 +47,7 @@ max_depth = 3
 ## 利用上の制約
 
 - 実行環境はローカルに限定します。クラウド実行、Bot UI の routine・webhook、定期タイマーによるターン終了後の再開は対象外です。
-- Claude Code のエージェントによる goal の設定・取得と、Codex の watcher 通知による終了済みターンの再開は非対応です。これらに依存する手順は実行できません。
+- Codex の watcher 通知による終了済みターンの再開は非対応です。この操作に依存する手順は実行できません。
 - `setup-pstack` は対象プロジェクトの `AGENTS.md` にモデル設定を保存し、`CLAUDE.md` をそこへの相対シンボリックリンクにします。
 - 計画の検証には Node.js、PR watcher と Orchestrate には Bun、GitHub 操作には GitHub CLI と対象リポジトリへの認証が必要です。
 
